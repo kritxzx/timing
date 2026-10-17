@@ -1,5 +1,5 @@
-// ชื่อแคชสำหรับเก็บไฟล์เพื่อให้ใช้งานแบบออฟไลน์ได้ (v3: Full-Grid Neon Calendar & Centered TODO Column)
-const CACHE_NAME = 'timing-pwa-v3';
+// ชื่อแคชสำหรับเก็บไฟล์เพื่อให้ใช้งานแบบออฟไลน์ได้ (v4: Single-Day Class Skip, White Holidays & iPhone Gestures)
+const CACHE_NAME = 'timing-pwa-v4';
 
 const CORE_ASSETS = [
   './',

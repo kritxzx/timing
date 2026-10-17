@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Timing" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#08080a" />
-  <meta name="description" content="Luxury iOS schedule, full-grid neon calendar, and centered TODO column for university students" />
+  <meta name="theme-color" content="#070709" />
+  <meta name="description" content="Luxury iOS schedule, full-grid neon calendar, holidays, and centered TODO column for university students" />
 
   <title>Timing</title>
 
@@ -24,14 +24,14 @@
 
   <style>
     /* ==========================================================================
-       1. ระบบสี Obsidian Luxury & 10 เฉดสีนีออนตัดกับสีดำสำหรับ iPhone
+       1. ระบบสี Obsidian Luxury, 10 เฉดสีนีออน และสีขาวบริสุทธิ์สำหรับวันหยุด/วันพิเศษ
        ========================================================================== */
     :root {
       --bg: #070709;
       --surface: #111115;
       --surface-elevated: #18181f;
-      --surface-glass: rgba(18, 18, 24, 0.82);
-      --sheet-glass: rgba(14, 14, 19, 0.95);
+      --surface-glass: rgba(18, 18, 24, 0.84);
+      --sheet-glass: rgba(14, 14, 19, 0.96);
 
       --text: #f5f5f7;
       --text-secondary: #a1a1aa;
@@ -39,6 +39,11 @@
 
       --border: rgba(255, 255, 255, 0.08);
       --border-strong: rgba(255, 255, 255, 0.16);
+
+      /* สีขาวบริสุทธิ์สำหรับวันหยุด / วันพิเศษ (Pure White Special Day / Holiday) */
+      --neon-white: #ffffff;
+      --neon-white-soft: rgba(255, 255, 255, 0.16);
+      --neon-white-border: rgba(255, 255, 255, 0.55);
 
       /* 10 สีีออนเรียบหรูตัดกับพื้นดำ (10 Luxury Neon Colors) */
       --neon-lime: #c8ff2e;
@@ -98,7 +103,7 @@
       --bg: #f2f2f7;
       --surface: #ffffff;
       --surface-elevated: #e5e5ea;
-      --surface-glass: rgba(255, 255, 255, 0.86);
+      --surface-glass: rgba(255, 255, 255, 0.88);
       --sheet-glass: rgba(248, 248, 252, 0.96);
 
       --text: #09090b;
@@ -107,9 +112,14 @@
 
       --border: rgba(0, 0, 0, 0.08);
       --border-strong: rgba(0, 0, 0, 0.15);
+
+      --neon-white: #18181b;
+      --neon-white-soft: rgba(24, 24, 27, 0.1);
+      --neon-white-border: rgba(24, 24, 27, 0.45);
     }
 
-    /* คลาสจับคู่สีนีออนทั้ง 10 เฉดสี */
+    /* คลาสจับคู่สีนีออนทั้ง 10 เฉดสี + สีขาวสำหรับวันพิเศษ/วันหยุด */
+    .neon-white { --item-neon: var(--neon-white); --item-soft: var(--neon-white-soft); --item-border: var(--neon-white-border); }
     .neon-lime { --item-neon: var(--neon-lime); --item-soft: var(--neon-lime-soft); --item-border: var(--neon-lime-border); }
     .neon-cyan { --item-neon: var(--neon-cyan); --item-soft: var(--neon-cyan-soft); --item-border: var(--neon-cyan-border); }
     .neon-rose { --item-neon: var(--neon-rose); --item-soft: var(--neon-rose-soft); --item-border: var(--neon-rose-border); }
@@ -122,7 +132,7 @@
     .neon-lemon { --item-neon: var(--neon-lemon); --item-soft: var(--neon-lemon-soft); --item-border: var(--neon-lemon-border); }
 
     /* ==========================================================================
-       2. รีเซ็ตและโครงสร้างพื้นฐาน
+       2. รีเซ็ตและโครงสร้างพื้นฐานสำหรับ iPhone
        ========================================================================== */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -175,14 +185,14 @@
       padding-top: calc(var(--safe-top) + 4px);
       padding-left: var(--safe-left);
       padding-right: var(--safe-right);
-      padding-bottom: calc(96px + var(--safe-bottom));
+      padding-bottom: calc(98px + var(--safe-bottom));
     }
 
     /* ==========================================================================
        3. ส่วนหัว iOS Header & ปุ่มจับเวลา 25 นาที (กดค้างเพื่อรีเซ็ต)
        ========================================================================== */
     .ios-header {
-      padding: 10px 14px 10px;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -191,8 +201,8 @@
       top: 0;
       z-index: 20;
       background-color: var(--surface-glass);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(22px) saturate(190%);
+      -webkit-backdrop-filter: blur(22px) saturate(190%);
       border-bottom: 1px solid var(--border);
     }
 
@@ -205,7 +215,7 @@
     }
 
     .large-title {
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.15;
@@ -234,7 +244,7 @@
       color: var(--text-secondary);
       position: relative;
       overflow: hidden;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      transition: transform 0.14s ease, border-color 0.14s ease;
     }
 
     .pill-btn:active {
@@ -247,12 +257,11 @@
       background-color: var(--neon-lime-soft);
     }
 
-    /* เอฟเฟกต์ตอนกดค้างเพื่อรีเซ็ตเวลา (Long-Press Visual Fill) */
     .pill-btn.is-holding::after {
       content: '';
       position: absolute;
       inset: 0;
-      background-color: rgba(255, 77, 141, 0.28);
+      background-color: rgba(255, 77, 141, 0.3);
       animation: holdFill 0.55s linear forwards;
     }
 
@@ -295,14 +304,14 @@
     }
 
     /* ==========================================================================
-       4. ปฏิทินขนาดใหญ่เต็มจอ + แถบสีพร้อมชื่อกิจกรรมในกรอบวัน (Full-Grid Neon Calendar)
+       4. ปฏิทินใหญ่เต็มจอ + วันหยุดสีขาว + แถบสีพร้อมชื่อกิจกรรมในกรอบวัน
        ========================================================================== */
     .cal-container {
       background-color: var(--surface);
       border: 1px solid var(--border-strong);
       border-radius: 22px;
       overflow: hidden;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .cal-header-bar {
@@ -357,7 +366,6 @@
       letter-spacing: 0.05em;
     }
 
-    /* ตารางปฏิทินขนาดใหญ่ แบ่งช่องชัดเจน 7 คอลัมน์ */
     .cal-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -366,7 +374,7 @@
     }
 
     .cal-cell {
-      min-height: 98px;
+      min-height: 102px;
       background-color: var(--surface);
       padding: 4px 3px 5px;
       display: flex;
@@ -386,10 +394,14 @@
 
     .cal-cell.is-outside {
       background-color: var(--bg);
-      opacity: 0.38;
+      opacity: 0.35;
     }
 
-    /* กรอบวันปัจจุบันและวันที่เลือก */
+    /* ไฮไลต์กรอบวันพิเศษ / วันหยุดในตารางปฏิทินด้วยแสงสีขาวละมุน */
+    .cal-cell.is-holiday {
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
     .cal-cell.is-selected {
       background-color: rgba(200, 255, 46, 0.05);
       box-shadow: inset 0 0 0 1.5px var(--neon-lime);
@@ -415,6 +427,11 @@
       color: var(--text-secondary);
     }
 
+    .cal-cell.is-holiday .cal-day-num {
+      color: var(--neon-white);
+      font-weight: 700;
+    }
+
     .cal-cell.is-today .cal-day-num {
       background-color: var(--neon-lime);
       color: #070709;
@@ -427,7 +444,12 @@
       font-weight: 700;
     }
 
-    /* แถบสีพร้อมชื่อกิจกรรมในกรอบวันของปฏิทิน (ย่อข้อความอัตโนมัติ Nameactiv...) */
+    .cal-holiday-star {
+      font-size: 9px;
+      color: var(--neon-white);
+      line-height: 1;
+    }
+
     .cal-events-stack {
       display: flex;
       flex-direction: column;
@@ -453,8 +475,17 @@
       display: block;
     }
 
+    /* แถบวันหยุด/วันพิเศษสีขาวในช่องวันของปฏิทิน */
+    .cal-event-chip.chip-holiday {
+      background-color: var(--neon-white-soft);
+      border-color: var(--neon-white-border);
+      border-left: 2.5px solid var(--neon-white);
+      color: var(--neon-white);
+      font-weight: 700;
+    }
+
     .cal-event-chip.is-done {
-      opacity: 0.45;
+      opacity: 0.42;
       text-decoration: line-through;
     }
 
@@ -474,7 +505,7 @@
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       align-items: stretch;
     }
 
@@ -517,7 +548,6 @@
       color: var(--text-muted);
     }
 
-    /* กรอบวันตรงกลาง (Center Active Day Frame) เด่นชัดด้วยกรอบสีนีออน */
     .day-frame-box.is-center {
       background-color: var(--neon-lime-soft);
       border: 2px solid var(--neon-lime);
@@ -539,13 +569,41 @@
       font-weight: 700;
     }
 
-    /* แถบความคืบหน้าของงานในวันนั้น (Daily Progress Bar) */
+    /* แถบกรองสถานะงาน (Filter Pills) */
+    .filter-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-strip::-webkit-scrollbar { display: none; }
+
+    .filter-pill {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .filter-pill.active {
+      background-color: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
     .progress-card {
       background-color: var(--surface);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 12px 14px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .progress-top {
@@ -572,7 +630,7 @@
       transition: width 0.25s ease;
     }
 
-    /* โหมดกระดาน 3 คอลัมน์ (เมื่อสลับดู TODO แบบหลายคอลัมน์ วันปัจจุบันอยู่คอลัมน์กลาง) */
+    /* โหมดกระดาน 3 คอลัมน์ */
     .todo-columns-board {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -645,10 +703,10 @@
     }
 
     /* ==========================================================================
-       6. การ์ดกิจกรรมและแถบ TODO สีีออน (Activity & TODO Neon Bars)
+       6. การ์ดกิจกรรม, วันหยุดสีขาว และปุ่มงดคลาสเรียนเฉพาะวัน (Skip Class Today)
        ========================================================================== */
     .section-block {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .section-head {
@@ -713,6 +771,13 @@
       justify-content: space-between;
       gap: 10px;
       overflow: hidden;
+    }
+
+    /* การ์ดวันหยุด / วันพิเศษสีขาวบริสุทธิ์ */
+    .activity-card.holiday-card {
+      background-color: var(--neon-white-soft);
+      border-color: var(--neon-white-border);
+      border-left: 5px solid var(--neon-white);
     }
 
     .activity-card.is-live {
@@ -805,6 +870,50 @@
       font-weight: 700;
     }
 
+    .neon-pill.white-badge {
+      background-color: var(--neon-white);
+      border-color: var(--neon-white);
+      color: #070709;
+      font-weight: 700;
+    }
+
+    /* ปุ่มกดลบคลาสเรียนเฉพาะวันนั้น (ไม่กระทบสัปดาห์อื่น) */
+    .skip-class-btn {
+      min-height: 36px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .skip-class-btn:active {
+      border-color: var(--neon-rose);
+      color: var(--neon-rose);
+      background-color: var(--neon-rose-soft);
+    }
+
+    /* แถบกู้คืนคลาสที่กดงดเรียนในวันนั้น */
+    .skipped-restore-bar {
+      padding: 10px 14px;
+      border-radius: 14px;
+      background-color: var(--surface);
+      border: 1px dashed var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
     .delete-icon-btn {
       width: 44px;
       height: 44px;
@@ -823,7 +932,6 @@
       background-color: var(--neon-rose-soft);
     }
 
-    /* แถบเพิ่มงานด่วนในหน้า TODO (Quick Inline Add Bar) */
     .quick-todo-form {
       display: flex;
       align-items: center;
@@ -832,7 +940,7 @@
       border: 1.5px solid var(--neon-lime-border);
       border-radius: 18px;
       padding: 6px 6px 6px 14px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .quick-todo-input {
@@ -910,10 +1018,14 @@
       margin-bottom: 14px;
     }
 
+    .ios-segmented.seg-3 {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
     .ios-seg-btn {
       min-height: 38px;
       border-radius: 999px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-secondary);
       transition: all 0.15s ease;
@@ -921,6 +1033,11 @@
 
     .ios-seg-btn.active {
       background-color: var(--neon-lime);
+      color: #070709;
+    }
+
+    .ios-seg-btn.active-white {
+      background-color: var(--neon-white);
       color: #070709;
     }
 
@@ -1090,7 +1207,6 @@
       gap: 10px;
     }
 
-    /* ตารางเลือกสีนีออน 10 สี (5 คอลัมน์ x 2 แถว) */
     .neon-selector-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -1124,6 +1240,30 @@
       border-color: var(--item-neon);
       background-color: var(--item-soft);
       color: var(--item-neon);
+    }
+
+    /* ตัวเลือกเปิด/ปิดงดคลาสเรียนอัตโนมัติในวันหยุด */
+    .holiday-toggle-row {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background-color: var(--neon-white-soft);
+      border: 1px solid var(--neon-white-border);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .holiday-toggle-row.visible {
+      display: flex;
+    }
+
+    .holiday-checkbox {
+      width: 22px;
+      height: 22px;
+      accent-color: #ffffff;
     }
 
     .neon-submit-btn {
@@ -1185,10 +1325,10 @@
     </header>
 
     <!-- ======================================================================
-         TAB 1 (HOME SCREEN): ปฏิทินใหญ่เต็มจอ แสดงแถบสีพร้อมชื่อกิจกรรมในกรอบวันโดยตรง
+         TAB 1 (HOME SCREEN): ปฏิทินใหญ่เต็มจอ แสดงวันหยุดสีขาว + แถบสีกิจกรรมในกรอบวัน
          ====================================================================== -->
     <main id="tab-calendar" class="tab-view active">
-      <div class="cal-container">
+      <div class="cal-container" id="calSwipeZone">
         <div class="cal-header-bar">
           <div class="cal-month-title" id="calMonthLabel">October 2026</div>
           <div class="cal-controls">
@@ -1211,14 +1351,17 @@
         <div id="calendarGrid" class="cal-grid"></div>
       </div>
 
-      <!-- แสดงรายละเอียดของวันที่เลือกด้านล่างปฏิทิน พร้อมปุ่มเพิ่มกิจกรรมสีนีออน -->
+      <!-- แสดงรายละเอียดของวันที่เลือกด้านล่างปฏิทิน (กด Skip Class เฉพาะวันนั้น หรือเพิ่มวันหยุดสีขาวได้) -->
       <section class="section-block">
         <div class="section-head">
           <span class="section-label" id="calSelectedDateLabel">SELECTED DAY</span>
-          <button type="button" class="action-link" id="calQuickAddBtn">+ Add Activity</button>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="action-link" id="calAddHolidayBtn" style="color: var(--neon-white);">★ Holiday</button>
+            <button type="button" class="action-link" id="calQuickAddBtn">+ Activity</button>
+          </div>
         </div>
         <div id="calSelectedDayList" class="card-stack"></div>
-        <button type="button" class="neon-add-bar" id="calBottomAddBtn">+ Add Neon Activity to This Date</button>
+        <button type="button" class="neon-add-bar" id="calBottomAddBtn">+ Add Activity or Holiday to This Date</button>
       </section>
     </main>
 
@@ -1226,16 +1369,15 @@
          TAB 2: TODO COLUMN (กรอบวันข้างบน วันปัจจุบันอยู่ตรงกลาง + TODO แท็บสีไหลลงมา)
          ====================================================================== -->
     <main id="tab-todo" class="tab-view">
-      <!-- สลับโหมดดูคอลัมน์เดี่ยว (Focus Column) หรือ 3 คอลัมน์เรียงกัน (3-Day Columns) -->
       <div class="ios-segmented">
         <button type="button" class="ios-seg-btn active" data-todoview="single">Focus TODO Column</button>
         <button type="button" class="ios-seg-btn" data-todoview="board">3-Day Columns Board</button>
       </div>
 
-      <!-- แถบกรอบวัน 5 ช่องด้านบน โดยวันที่เลือก/วันปัจจุบันอยู่ตรงกลางเสมอ -->
+      <!-- แถบกรอบวัน 5 ช่องด้านบน โดยวันที่เลือก/วันปัจจุบันอยู่ตรงกลางเสมอ (รองรับการปัดซ้าย-ขวา) -->
       <div id="todoDayStrip" class="todo-day-strip"></div>
 
-      <!-- โหมดที่ 1: คอลัมน์ TODO หลัก (พร้อมหลอดความคืบหน้า + ช่องเพิ่มงานด่วน + แท็บสีไหลลงมา) -->
+      <!-- โหมดที่ 1: คอลัมน์ TODO หลัก -->
       <div id="todoSingleColumnPane">
         <div class="progress-card">
           <div class="progress-top">
@@ -1252,6 +1394,14 @@
           <input type="text" id="quickTodoInput" class="quick-todo-input" placeholder="Quick add TODO for this day..." maxlength="140" />
           <button type="submit" class="quick-todo-submit">+ Add</button>
         </form>
+
+        <!-- ปุ่มกรองรายการ TODO -->
+        <div class="filter-strip" id="todoFilterStrip">
+          <button type="button" class="filter-pill active" data-filter="all">All Items</button>
+          <button type="button" class="filter-pill" data-filter="pending">Pending TODOs</button>
+          <button type="button" class="filter-pill" data-filter="done">Completed</button>
+          <button type="button" class="filter-pill" data-filter="holiday">★ Holidays &amp; Notes</button>
+        </div>
 
         <!-- หมวดงานค้าง (Overdue) -->
         <section id="overdueSection" class="section-block" style="display: none;">
@@ -1271,7 +1421,7 @@
           <div id="todoTasksList" class="card-stack"></div>
         </section>
 
-        <!-- หมวดคาบเรียนของวันนั้น -->
+        <!-- หมวดคาบเรียนของวันนั้น (สามารถกด Skip Class เฉพาะวันนี้ได้) -->
         <section class="section-block">
           <div class="section-head">
             <span class="section-label">Classes on This Day</span>
@@ -1308,7 +1458,7 @@
 
       <div id="weeklyClassesPane">
         <div class="section-head">
-          <span class="section-label">Recurring Timetable</span>
+          <span class="section-label">Recurring Timetable (Tap class to edit)</span>
           <button type="button" class="action-link" id="openAddClassBtn">+ Add Class</button>
         </div>
         <div id="weeklyClassesList"></div>
@@ -1360,7 +1510,7 @@
   </div>
 
   <!-- ========================================================================
-       BOTTOM SHEET 1: รายละเอียดของวัน + เพิ่ม/แก้ไขกิจกรรมพร้อมสีนีออน 10 สี
+       BOTTOM SHEET 1: รายละเอียดของวัน + เพิ่มงาน / โน้ต / วันหยุดสีขาว
        ======================================================================== -->
   <div id="daySheetBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true">
     <div class="ios-sheet" id="daySheetContainer">
@@ -1378,27 +1528,35 @@
       <form id="dayItemForm" class="form-group" style="border-top: 1px solid var(--border); padding-top: 14px;">
         <input type="hidden" id="editingItemId" value="" />
         <div>
-          <span class="field-caption" id="formModeCaption">Add Activity / TODO</span>
-          <div class="ios-segmented" style="margin-bottom: 0;">
+          <span class="field-caption" id="formModeCaption">Add to This Date</span>
+          <div class="ios-segmented seg-3" style="margin-bottom: 0;">
             <button type="button" class="ios-seg-btn active" data-item-type="task">TODO Task</button>
             <button type="button" class="ios-seg-btn" data-item-type="note">Note / Event</button>
+            <button type="button" class="ios-seg-btn" data-item-type="holiday">★ Holiday</button>
           </div>
         </div>
 
-        <div>
+        <!-- ตัวเลือกงดคลาสเรียนอัตโนมัติในวันหยุด (แสดงเมื่อเลือกโหมด ★ Holiday) -->
+        <label class="holiday-toggle-row" id="holidaySkipToggleRow" for="holidaySkipClassesCheck">
+          <span>★ White Badge · Skip weekly classes on this day</span>
+          <input type="checkbox" id="holidaySkipClassesCheck" class="holiday-checkbox" checked />
+        </label>
+
+        <!-- ตารางเลือกสีนีออน 10 สี (ซ่อนเมื่อเป็นวันหยุดสีขาว) -->
+        <div id="neonPickerSection">
           <span class="field-caption">10 Neon Bar Colors</span>
           <div class="neon-selector-grid" id="itemNeonPicker"></div>
         </div>
 
         <div>
-          <label class="field-caption" for="itemTitleInput">Activity Name</label>
+          <label class="field-caption" id="itemTitleLabel" for="itemTitleInput">Activity Name</label>
           <div class="neon-input-wrap">
             <span class="neon-input-bar"></span>
-            <input type="text" id="itemTitleInput" class="ios-input" placeholder="e.g. Finish UI Prototype, Read Ch.4..." maxlength="140" required />
+            <input type="text" id="itemTitleInput" class="ios-input" placeholder="e.g. Finish UI Prototype, Public Holiday..." maxlength="140" required />
           </div>
         </div>
 
-        <div class="grid-2col">
+        <div class="grid-2col" id="timeRepeatRow">
           <div>
             <label class="field-caption" for="itemTimeInput">Time (Optional)</label>
             <input type="time" id="itemTimeInput" class="ios-input mono" />
@@ -1419,17 +1577,18 @@
   </div>
 
   <!-- ========================================================================
-       BOTTOM SHEET 2: เพิ่มคาบเรียนประจำสัปดาห์ (10 สีีออน)
+       BOTTOM SHEET 2: เพิ่ม/แก้ไขคาบเรียนประจำสัปดาห์ (10 สีีออน)
        ======================================================================== -->
   <div id="classSheetBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true">
     <div class="ios-sheet" id="classSheetContainer">
       <div class="sheet-grabber"></div>
       <div class="sheet-topbar">
-        <div class="sheet-heading">New Weekly Class</div>
+        <div class="sheet-heading" id="classSheetHeading">New Weekly Class</div>
         <button type="button" class="pill-btn" id="closeClassSheetBtn">Cancel</button>
       </div>
 
       <form id="addClassForm" class="form-group">
+        <input type="hidden" id="editingClassId" value="" />
         <div>
           <span class="field-caption">Course Neon Color (10 Colors)</span>
           <div class="neon-selector-grid" id="classColorPicker"></div>
@@ -1473,7 +1632,7 @@
           </div>
         </div>
 
-        <button type="submit" class="neon-submit-btn">Save Weekly Class</button>
+        <button type="submit" class="neon-submit-btn" id="saveClassSubmitBtn">Save Weekly Class</button>
       </form>
     </div>
   </div>
@@ -1534,7 +1693,7 @@
         <div>
           <label class="field-caption" for="themeModeSelect">Appearance</label>
           <select id="themeModeSelect" class="ios-select">
-            <option value="dark">Obsidian Luxury Dark (Best for 10 Neon Colors)</option>
+            <option value="dark">Obsidian Luxury Dark (Best for Neon &amp; White)</option>
             <option value="light">Alabaster &amp; Onyx Light</option>
           </select>
         </div>
@@ -1567,8 +1726,8 @@
         </div>
 
         <div style="border-top: 1px solid var(--border); padding-top: 12px;">
-          <span class="field-caption">Demo Data</span>
-          <button type="button" class="ios-secondary-btn" id="loadSampleBtn">Load Rich 10-Neon Sample Schedule</button>
+          <span class="field-caption">Quick Setup &amp; Demo</span>
+          <button type="button" class="ios-secondary-btn" id="loadSampleBtn">Load 10-Neon Sample + White Holidays</button>
         </div>
       </div>
     </div>
@@ -1612,6 +1771,7 @@
     };
 
     function normalizeNeon(colorStr, fallback = 'lime') {
+      if (colorStr === 'white') return 'white';
       if (NEON_KEYS.includes(colorStr)) return colorStr;
       if (LEGACY_COLOR_MAP[colorStr]) return LEGACY_COLOR_MAP[colorStr];
       return fallback;
@@ -1622,7 +1782,9 @@
     }
 
     let state = {
+      // classes: { id, name, room, day, start, end, color, excludedDates: ['YYYY-MM-DD'] }
       classes: [],
+      // items: { id, title, type ('task'|'note'|'holiday'), date, time, repeat, color, done, completedDates: [] }
       items: [],
       exams: [],
       settings: {
@@ -1633,7 +1795,8 @@
     };
 
     let activeTab = 'calendar';
-    let activeTodoView = 'single'; // 'single' | 'board'
+    let activeTodoView = 'single';
+    let activeTodoFilter = 'all';
     let activeSubtab = 'weekly';
     let calendarCursor = new Date();
     let selectedDateStr = formatDateKey(new Date());
@@ -1704,7 +1867,12 @@
         if (!raw) return;
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
-          state.classes = Array.isArray(parsed.classes) ? parsed.classes : [];
+          state.classes = Array.isArray(parsed.classes)
+            ? parsed.classes.map((c) => ({
+                ...c,
+                excludedDates: Array.isArray(c.excludedDates) ? c.excludedDates : []
+              }))
+            : [];
           state.items = Array.isArray(parsed.items) ? parsed.items : [];
           state.exams = Array.isArray(parsed.exams) ? parsed.exams : [];
           if (parsed.settings && typeof parsed.settings === 'object') {
@@ -1736,7 +1904,6 @@
       }
     }
 
-    // สร้างปุ่มเลือกสีนีออน 10 สีในฟอร์ม
     function renderNeonPickers() {
       const itemPicker = document.getElementById('itemNeonPicker');
       const classPicker = document.getElementById('classColorPicker');
@@ -1757,7 +1924,57 @@
     }
 
     /* ==========================================================================
-       ตรรกะการตรวจสอบรายการประจำวันและงานที่ทำซ้ำ
+       ตรรกะการตรวจสอบคาบเรียนประจำสัปดาห์ (รองรับการกดลบเฉพาะวันหยุดโดยไม่กระทบสัปดาห์อื่น)
+       ========================================================================== */
+    function isClassExcludedOnDate(cls, dateStr) {
+      return Array.isArray(cls.excludedDates) && cls.excludedDates.includes(dateStr);
+    }
+
+    function getActiveClassesForDate(dateStr) {
+      const weekday = parseDateKey(dateStr).getDay();
+      return state.classes
+        .filter((c) => Number(c.day) === weekday && !isClassExcludedOnDate(c, dateStr))
+        .sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+    }
+
+    function getSkippedClassesForDate(dateStr) {
+      const weekday = parseDateKey(dateStr).getDay();
+      return state.classes
+        .filter((c) => Number(c.day) === weekday && isClassExcludedOnDate(c, dateStr))
+        .sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+    }
+
+    // กดลบคลาสเรียนเฉพาะวันที่ระบุ (เช่น อาทิตย์ที่ 2 เป็นวันหยุด) โดยไม่กระทบสัปดาห์อื่น
+    function skipClassOnDate(classId, dateStr) {
+      const cls = state.classes.find((c) => c.id === classId);
+      if (!cls) return;
+      if (!Array.isArray(cls.excludedDates)) cls.excludedDates = [];
+      if (!cls.excludedDates.includes(dateStr)) {
+        cls.excludedDates.push(dateStr);
+      }
+      saveState();
+      renderAll();
+      if (document.getElementById('daySheetBackdrop').classList.contains('open')) {
+        renderDaySheet(selectedDateStr);
+      }
+    }
+
+    // คืนค่าคลาสเรียนที่กดงดในวันนั้นกลับมาเหมือนเดิม
+    function restoreSkippedClassesOnDate(dateStr) {
+      state.classes.forEach((cls) => {
+        if (Array.isArray(cls.excludedDates)) {
+          cls.excludedDates = cls.excludedDates.filter((d) => d !== dateStr);
+        }
+      });
+      saveState();
+      renderAll();
+      if (document.getElementById('daySheetBackdrop').classList.contains('open')) {
+        renderDaySheet(selectedDateStr);
+      }
+    }
+
+    /* ==========================================================================
+       ตรรกะการตรวจสอบกิจกรรม งานซ้ำ และวันหยุด/วันพิเศษ
        ========================================================================== */
     function doesItemOccurOnDate(item, targetDateStr) {
       if (item.date === targetDateStr) return true;
@@ -1807,22 +2024,27 @@
     }
 
     /* ==========================================================================
-       สร้าง HTML การ์ดกิจกรรมพร้อมแถบสีนีออน (แตะที่ชื่อเพื่อแก้ไขได้)
+       สร้าง HTML การ์ดกิจกรรม / วันหยุดสีขาว / คาบเรียนที่กดลบเฉพาะวันได้
        ========================================================================== */
     function renderTaskCardHtml(item, contextDateStr, isOverdueView = false) {
+      const isHoliday = item.type === 'holiday';
       const isTask = item.type === 'task';
       const isDone = isTask ? isItemDoneOnDate(item, contextDateStr) : false;
-      const neonKey = normalizeNeon(item.color, isTask ? 'lime' : 'amber');
+      const neonKey = isHoliday ? 'white' : normalizeNeon(item.color, isTask ? 'lime' : 'amber');
       const safeTitle = escapeHtml(item.title);
 
       const pills = [];
-      if (item.time) pills.push(`<span class="neon-pill">${escapeHtml(item.time)}</span>`);
-      if (!isTask) pills.push(`<span class="neon-pill">Note</span>`);
-      if (item.repeat && item.repeat !== 'none') pills.push(`<span class="neon-pill">${escapeHtml(item.repeat)}</span>`);
-      if (isOverdueView) pills.push(`<span class="neon-pill">Due ${escapeHtml(formatReadableDate(item.date))}</span>`);
+      if (isHoliday) {
+        pills.push(`<span class="neon-pill white-badge">★ SPECIAL / HOLIDAY</span>`);
+      } else {
+        if (item.time) pills.push(`<span class="neon-pill">${escapeHtml(item.time)}</span>`);
+        if (!isTask) pills.push(`<span class="neon-pill">Note</span>`);
+        if (item.repeat && item.repeat !== 'none') pills.push(`<span class="neon-pill">${escapeHtml(item.repeat)}</span>`);
+        if (isOverdueView) pills.push(`<span class="neon-pill">Due ${escapeHtml(formatReadableDate(item.date))}</span>`);
+      }
 
       return `
-        <div class="activity-card neon-${neonKey} ${isDone ? 'is-done' : ''}">
+        <div class="activity-card neon-${neonKey} ${isHoliday ? 'holiday-card' : ''} ${isDone ? 'is-done' : ''}">
           <div class="activity-main">
             ${isTask ? `
               <button type="button" class="ios-check-btn" data-action="toggle-item" data-id="${escapeHtml(item.id)}" data-date="${escapeHtml(contextDateStr)}" aria-label="Complete activity">
@@ -1834,7 +2056,7 @@
               </button>
             ` : ''}
             <div class="activity-text" data-action="edit-item" data-id="${escapeHtml(item.id)}" title="Tap to edit">
-              <div class="activity-title">${safeTitle}</div>
+              <div class="activity-title">${isHoliday ? '★ ' : ''}${safeTitle}</div>
               ${pills.length > 0 ? `<div class="activity-meta">${pills.join('')}</div>` : ''}
             </div>
           </div>
@@ -1843,12 +2065,13 @@
       `;
     }
 
+    // สร้างไทม์ไลน์ของวันที่ระบุ (แสดงวันหยุดสีขาวบนสุด + คาบเรียนที่กด Skip เฉพาะวันนั้นได้ + งาน/โน้ต)
     function buildDayTimelineHtml(dateStr) {
-      const d = parseDateKey(dateStr);
-      const weekday = d.getDay();
+      const dayHolidays = state.items
+        .filter((item) => item.type === 'holiday' && doesItemOccurOnDate(item, dateStr))
+        .map((item) => ({ kind: 'item', sortTime: -10, data: item }));
 
-      const dayClasses = state.classes
-        .filter((c) => Number(c.day) === weekday)
+      const dayClasses = getActiveClassesForDate(dateStr)
         .map((c) => ({ kind: 'class', sortTime: timeToMinutes(c.start), data: c }));
 
       const dayExams = state.exams
@@ -1856,53 +2079,68 @@
         .map((ex) => ({ kind: 'exam', sortTime: timeToMinutes(ex.time), data: ex }));
 
       const dayItems = state.items
-        .filter((item) => doesItemOccurOnDate(item, dateStr))
+        .filter((item) => item.type !== 'holiday' && doesItemOccurOnDate(item, dateStr))
         .map((item) => ({ kind: 'item', sortTime: timeToMinutes(item.time), data: item }));
 
-      const combined = [...dayClasses, ...dayExams, ...dayItems].sort((a, b) => a.sortTime - b.sortTime);
+      const skippedClasses = getSkippedClassesForDate(dateStr);
+      const combined = [...dayHolidays, ...dayClasses, ...dayExams, ...dayItems].sort((a, b) => a.sortTime - b.sortTime);
 
+      let html = '';
       if (combined.length === 0) {
-        return `<div class="empty-box">No classes or activities on this day yet.</div>`;
+        html = `<div class="empty-box">No classes or activities on this day yet.</div>`;
+      } else {
+        html = combined.map((entry) => {
+          if (entry.kind === 'class') {
+            const cls = entry.data;
+            const neonKey = normalizeNeon(cls.color, 'cyan');
+            return `
+              <div class="activity-card neon-${neonKey}">
+                <div class="activity-main">
+                  <div class="activity-text" data-action="edit-class" data-id="${escapeHtml(cls.id)}">
+                    <div class="activity-title">${escapeHtml(cls.name)}</div>
+                    <div class="activity-meta">
+                      <span class="neon-pill">${escapeHtml(cls.start)} – ${escapeHtml(cls.end)}</span>
+                      ${cls.room ? `<span>Room ${escapeHtml(cls.room)}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="skip-class-btn" data-action="skip-class-date" data-id="${escapeHtml(cls.id)}" data-date="${escapeHtml(dateStr)}" title="Remove class on this date only (keeps other weeks)">
+                  &times; Skip Day
+                </button>
+              </div>
+            `;
+          }
+          if (entry.kind === 'exam') {
+            const ex = entry.data;
+            return `
+              <div class="activity-card neon-rose is-live">
+                <div class="activity-main">
+                  <div class="activity-text">
+                    <div class="activity-title">${escapeHtml(ex.title)}</div>
+                    <div class="activity-meta">
+                      <span class="neon-pill solid-live">EXAM</span>
+                      ${ex.time ? `<span class="mono">${escapeHtml(ex.time)}</span>` : ''}
+                      ${ex.room ? `<span>${escapeHtml(ex.room)}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+          return renderTaskCardHtml(entry.data, dateStr, false);
+        }).join('');
       }
 
-      return combined.map((entry) => {
-        if (entry.kind === 'class') {
-          const cls = entry.data;
-          const neonKey = normalizeNeon(cls.color, 'cyan');
-          return `
-            <div class="activity-card neon-${neonKey}">
-              <div class="activity-main">
-                <div class="activity-text">
-                  <div class="activity-title">${escapeHtml(cls.name)}</div>
-                  <div class="activity-meta">
-                    <span class="neon-pill">${escapeHtml(cls.start)} – ${escapeHtml(cls.end)}</span>
-                    ${cls.room ? `<span>Room ${escapeHtml(cls.room)}</span>` : ''}
-                  </div>
-                </div>
-              </div>
-              <span class="neon-pill">Class</span>
-            </div>
-          `;
-        }
-        if (entry.kind === 'exam') {
-          const ex = entry.data;
-          return `
-            <div class="activity-card neon-rose is-live">
-              <div class="activity-main">
-                <div class="activity-text">
-                  <div class="activity-title">${escapeHtml(ex.title)}</div>
-                  <div class="activity-meta">
-                    <span class="neon-pill solid-live">EXAM</span>
-                    ${ex.time ? `<span class="mono">${escapeHtml(ex.time)}</span>` : ''}
-                    ${ex.room ? `<span>${escapeHtml(ex.room)}</span>` : ''}
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-        }
-        return renderTaskCardHtml(entry.data, dateStr, false);
-      }).join('');
+      if (skippedClasses.length > 0) {
+        html += `
+          <div class="skipped-restore-bar">
+            <span>${skippedClasses.length} weekly class${skippedClasses.length > 1 ? 'es' : ''} skipped on this date</span>
+            <button type="button" class="action-link" data-action="restore-skipped-date" data-date="${escapeHtml(dateStr)}">Restore</button>
+          </div>
+        `;
+      }
+
+      return html;
     }
 
     /* ==========================================================================
@@ -1924,7 +2162,7 @@
       }
     }
 
-    // แสดงผลหน้าแรก: ปฏิทินใหญ่พร้อมแถบสีและชื่อกิจกรรมอยู่ในกรอบของแต่ละวันโดยตรง
+    // แสดงผลหน้าแรก: ปฏิทินใหญ่พร้อมวันหยุดสีขาวและแถบสีกิจกรรมในกรอบวันโดยตรง
     function renderCalendarTab() {
       const year = calendarCursor.getFullYear();
       const month = calendarCursor.getMonth();
@@ -1945,49 +2183,65 @@
         const isCurrentMonth = cellDate.getMonth() === month;
         const isToday = cellDateStr === todayStr;
         const isSelected = cellDateStr === selectedDateStr;
-        const weekday = cellDate.getDay();
 
-        // รวบรวมกิจกรรมทั้งหมดของวันนั้นเพื่อแสดงเป็นแถบสีพร้อมชื่อในกรอบวันของปฏิทิน
         const cellEntries = [];
+        let hasHoliday = false;
 
+        // 1. วันพิเศษ / วันหยุด แสดงเป็นแถบสีขาวบริสุทธิ์บนสุดของช่องวัน
+        state.items
+          .filter((item) => item.type === 'holiday' && doesItemOccurOnDate(item, cellDateStr))
+          .forEach((h) => {
+            hasHoliday = true;
+            cellEntries.push({
+              title: `★ ${h.title}`,
+              color: 'white',
+              isHoliday: true,
+              done: false,
+              sort: -100
+            });
+          });
+
+        // 2. วันสอบ
         state.exams
           .filter((ex) => ex.date === cellDateStr)
           .forEach((ex) => {
             cellEntries.push({
               title: ex.title,
               color: 'rose',
+              isHoliday: false,
               done: false,
               sort: timeToMinutes(ex.time) - 1
             });
           });
 
+        // 3. งาน TODO และโน้ต
         state.items
-          .filter((item) => doesItemOccurOnDate(item, cellDateStr))
+          .filter((item) => item.type !== 'holiday' && doesItemOccurOnDate(item, cellDateStr))
           .forEach((item) => {
             cellEntries.push({
               title: item.title,
               color: normalizeNeon(item.color, item.type === 'note' ? 'amber' : 'lime'),
+              isHoliday: false,
               done: item.type === 'task' ? isItemDoneOnDate(item, cellDateStr) : false,
               sort: timeToMinutes(item.time)
             });
           });
 
-        state.classes
-          .filter((c) => Number(c.day) === weekday)
-          .forEach((c) => {
-            cellEntries.push({
-              title: c.name,
-              color: normalizeNeon(c.color, 'cyan'),
-              done: false,
-              sort: timeToMinutes(c.start)
-            });
+        // 4. คาบเรียนประจำสัปดาห์ (ที่ไม่ถูกกดลบเฉพาะวันนั้น)
+        getActiveClassesForDate(cellDateStr).forEach((c) => {
+          cellEntries.push({
+            title: c.name,
+            color: normalizeNeon(c.color, 'cyan'),
+            isHoliday: false,
+            done: false,
+            sort: timeToMinutes(c.start)
           });
+        });
 
         cellEntries.sort((a, b) => a.sort - b.sort);
 
-        // แสดงแถบสีพร้อมชื่อสูงสุด 3 รายการต่อช่อง ถ้ายาวเกินจะย่อเป็น Nameactiv... ด้วย CSS ellipsis
         const visibleChips = cellEntries.slice(0, 3).map((entry) => `
-          <span class="cal-event-chip neon-${entry.color} ${entry.done ? 'is-done' : ''}">${escapeHtml(entry.title)}</span>
+          <span class="cal-event-chip neon-${entry.color} ${entry.isHoliday ? 'chip-holiday' : ''} ${entry.done ? 'is-done' : ''}">${escapeHtml(entry.title)}</span>
         `).join('');
 
         const extraCount = cellEntries.length - 3;
@@ -1995,11 +2249,12 @@
 
         cellsHtml += `
           <button type="button"
-            class="cal-cell ${!isCurrentMonth ? 'is-outside' : ''} ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}"
+            class="cal-cell ${!isCurrentMonth ? 'is-outside' : ''} ${hasHoliday ? 'is-holiday' : ''} ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}"
             data-date="${cellDateStr}"
             aria-label="${formatReadableDate(cellDateStr)}">
             <div class="cal-cell-top">
               <span class="cal-day-num mono">${cellDate.getDate()}</span>
+              ${hasHoliday ? '<span class="cal-holiday-star">★</span>' : ''}
             </div>
             <div class="cal-events-stack">
               ${visibleChips}
@@ -2020,7 +2275,7 @@
     function renderTodoTab() {
       const todayStr = formatDateKey(new Date());
 
-      // 1. สร้างแถบกรอบวัน 5 ช่องด้านบน โดยให้วันที่กำลังดู (selectedDateStr) อยู่ช่องตรงกลางเสมอ (offset: -2, -1, 0, +1, +2)
+      // 1. แถบกรอบวัน 5 ช่องด้านบน วันปัจจุบันที่เลือกอยู่ตรงกลางเสมอ
       const offsets = [-2, -1, 0, 1, 2];
       const stripEl = document.getElementById('todoDayStrip');
 
@@ -2030,11 +2285,12 @@
         const isCenter = offset === 0;
         const isToday = dStr === todayStr;
         const dayTasks = state.items.filter((it) => doesItemOccurOnDate(it, dStr));
+        const hasHoliday = dayTasks.some((it) => it.type === 'holiday');
         const dowLabel = isToday ? 'TODAY' : DAYS_SHORT[dObj.getDay()];
 
         return `
           <button type="button" class="day-frame-box ${isCenter ? 'is-center' : ''}" data-strip-date="${dStr}">
-            <span class="df-dow">${dowLabel}</span>
+            <span class="df-dow">${hasHoliday ? '★ ' : ''}${dowLabel}</span>
             <span class="df-num">${dObj.getDate()}</span>
             <span class="df-count">${dayTasks.length} item${dayTasks.length === 1 ? '' : 's'}</span>
           </button>
@@ -2042,16 +2298,16 @@
       }).join('');
 
       // 2. คำนวณความคืบหน้าของงานในวันที่เลือก
-      const activeDayItems = state.items
+      const allDayItems = state.items
         .filter((item) => doesItemOccurOnDate(item, selectedDateStr))
-        .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+        .sort((a, b) => (a.type === 'holiday' ? -1 : 1) || timeToMinutes(a.time) - timeToMinutes(b.time));
 
-      const onlyTasks = activeDayItems.filter((it) => it.type === 'task');
+      const onlyTasks = allDayItems.filter((it) => it.type === 'task');
       const doneCount = onlyTasks.filter((it) => isItemDoneOnDate(it, selectedDateStr)).length;
       const pct = onlyTasks.length > 0 ? Math.round((doneCount / onlyTasks.length) * 100) : 0;
 
       document.getElementById('todoProgressText').textContent =
-        onlyTasks.length > 0 ? `Completed ${doneCount} of ${onlyTasks.length} TODOs` : 'No checkable TODOs yet';
+        onlyTasks.length > 0 ? `Completed ${doneCount} of ${onlyTasks.length} TODOs` : 'No checkable TODOs on this day';
       document.getElementById('todoProgressPct').textContent = `${pct}%`;
       document.getElementById('todoProgressFill').style.width = `${pct}%`;
 
@@ -2069,30 +2325,36 @@
         overdueSec.style.display = 'none';
       }
 
-      // 4. รายการ TODO แท็บสีไหลลงมา
+      // 4. กรองรายการตาม Filter Pill ที่เลือก
+      const filteredItems = allDayItems.filter((item) => {
+        if (activeTodoFilter === 'pending') return item.type === 'task' && !isItemDoneOnDate(item, selectedDateStr);
+        if (activeTodoFilter === 'done') return item.type === 'task' && isItemDoneOnDate(item, selectedDateStr);
+        if (activeTodoFilter === 'holiday') return item.type === 'holiday' || item.type === 'note';
+        return true;
+      });
+
       document.getElementById('todoColumnHeaderLabel').textContent = `TODO LIST · ${formatReadableDate(selectedDateStr).toUpperCase()}`;
       const tasksEl = document.getElementById('todoTasksList');
-      if (activeDayItems.length === 0) {
-        tasksEl.innerHTML = `<div class="empty-box">No TODOs on this day yet. Type above or tap "+ Full Options".</div>`;
+      if (filteredItems.length === 0) {
+        tasksEl.innerHTML = `<div class="empty-box">No matching items on this day.</div>`;
       } else {
-        tasksEl.innerHTML = activeDayItems.map((item) => renderTaskCardHtml(item, selectedDateStr, false)).join('');
+        tasksEl.innerHTML = filteredItems.map((item) => renderTaskCardHtml(item, selectedDateStr, false)).join('');
       }
 
-      // 5. คาบเรียนของวันที่เลือก
-      const targetWeekday = parseDateKey(selectedDateStr).getDay();
+      // 5. คาบเรียนของวันที่เลือก (พร้อมปุ่มกด Skip Day เฉพาะวันนี้ และปุ่ม Restore หากกดข้ามไว้)
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
-      const dayClasses = state.classes
-        .filter((c) => Number(c.day) === targetWeekday)
-        .sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+      const dayClasses = getActiveClassesForDate(selectedDateStr);
+      const skippedClasses = getSkippedClassesForDate(selectedDateStr);
+      const targetWeekday = parseDateKey(selectedDateStr).getDay();
 
       document.getElementById('todayClassCount').textContent = dayClasses.length;
       const classesListEl = document.getElementById('todayClassesList');
 
+      let htmlParts = [];
       if (dayClasses.length === 0) {
-        classesListEl.innerHTML = `<div class="empty-box">No classes scheduled for ${DAYS_FULL[targetWeekday]}.</div>`;
+        htmlParts.push(`<div class="empty-box">No active classes on ${DAYS_FULL[targetWeekday]}.</div>`);
       } else {
-        let htmlParts = [];
         dayClasses.forEach((cls, idx) => {
           const startMin = timeToMinutes(cls.start);
           const endMin = timeToMinutes(cls.end);
@@ -2115,20 +2377,33 @@
           htmlParts.push(`
             <div class="activity-card neon-${neonKey} ${isCurrent ? 'is-live' : ''} ${isPast ? 'is-past' : ''}">
               <div class="activity-main">
-                <div class="activity-text">
+                <div class="activity-text" data-action="edit-class" data-id="${escapeHtml(cls.id)}">
                   <div class="activity-title">${escapeHtml(cls.name)}</div>
                   <div class="activity-meta">
                     <span class="neon-pill">${escapeHtml(cls.start)} – ${escapeHtml(cls.end)}</span>
                     ${cls.room ? `<span>Room ${escapeHtml(cls.room)}</span>` : ''}
+                    ${isCurrent ? `<span class="neon-pill solid-live">LIVE · ${leftMins}m</span>` : ''}
                   </div>
                 </div>
               </div>
-              ${isCurrent ? `<span class="neon-pill solid-live">LIVE · ${leftMins}m</span>` : ''}
+              <button type="button" class="skip-class-btn" data-action="skip-class-date" data-id="${escapeHtml(cls.id)}" data-date="${escapeHtml(selectedDateStr)}" title="Skip this class on this day only">
+                &times; Skip Day
+              </button>
             </div>
           `);
         });
-        classesListEl.innerHTML = htmlParts.join('');
       }
+
+      if (skippedClasses.length > 0) {
+        htmlParts.push(`
+          <div class="skipped-restore-bar">
+            <span>${skippedClasses.length} weekly class${skippedClasses.length > 1 ? 'es' : ''} skipped on this day</span>
+            <button type="button" class="action-link" data-action="restore-skipped-date" data-date="${escapeHtml(selectedDateStr)}">Restore</button>
+          </div>
+        `);
+      }
+
+      classesListEl.innerHTML = htmlParts.join('');
 
       // 6. นับถอยหลังวันสอบ
       const upcomingExams = state.exams
@@ -2162,7 +2437,7 @@
         examsSec.style.display = 'none';
       }
 
-      // 7. โหมดกระดาน 3 คอลัมน์ (3-Day Columns Board: วันก่อนหน้า | วันปัจจุบันตรงกลาง | วันถัดไป)
+      // 7. โหมดกระดาน 3 คอลัมน์
       const boardOffsets = [-1, 0, 1];
       const boardEl = document.getElementById('todoColumnsBoard');
       boardEl.innerHTML = boardOffsets.map((offset) => {
@@ -2172,16 +2447,17 @@
         const isToday = dStr === todayStr;
         const colItems = state.items
           .filter((it) => doesItemOccurOnDate(it, dStr))
-          .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+          .sort((a, b) => (a.type === 'holiday' ? -1 : 1) || timeToMinutes(a.time) - timeToMinutes(b.time));
 
         const barsHtml = colItems.length === 0
           ? `<div style="font-size:11px; color:var(--text-muted); text-align:center; padding:18px 4px;">Empty</div>`
           : colItems.map((it) => {
-              const cKey = normalizeNeon(it.color, it.type === 'note' ? 'amber' : 'lime');
+              const isHol = it.type === 'holiday';
+              const cKey = isHol ? 'white' : normalizeNeon(it.color, it.type === 'note' ? 'amber' : 'lime');
               const done = it.type === 'task' && isItemDoneOnDate(it, dStr);
               return `
-                <button type="button" class="col-mini-bar neon-${cKey} ${done ? 'is-done' : ''}" data-action="toggle-item" data-id="${escapeHtml(it.id)}" data-date="${dStr}" style="text-align:left;">
-                  <span>${escapeHtml(it.title)}</span>
+                <button type="button" class="col-mini-bar neon-${cKey} ${done ? 'is-done' : ''}" data-action="${it.type === 'task' ? 'toggle-item' : 'edit-item'}" data-id="${escapeHtml(it.id)}" data-date="${dStr}" style="text-align:left;">
+                  <span>${isHol ? '★ ' : ''}${escapeHtml(it.title)}</span>
                   ${it.time ? `<span class="mono" style="font-size:9.5px; opacity:0.8;">${escapeHtml(it.time)}</span>` : ''}
                 </button>
               `;
@@ -2225,18 +2501,20 @@
               <div class="card-stack">
                 ${list.map((cls) => {
                   const neonKey = normalizeNeon(cls.color, 'cyan');
+                  const skipCount = Array.isArray(cls.excludedDates) ? cls.excludedDates.length : 0;
                   return `
                     <div class="activity-card neon-${neonKey}">
                       <div class="activity-main">
-                        <div class="activity-text">
+                        <div class="activity-text" data-action="edit-class" data-id="${escapeHtml(cls.id)}" title="Tap to edit class">
                           <div class="activity-title">${escapeHtml(cls.name)}</div>
                           <div class="activity-meta">
                             <span class="neon-pill">${escapeHtml(cls.start)} – ${escapeHtml(cls.end)}</span>
                             ${cls.room ? `<span>Room ${escapeHtml(cls.room)}</span>` : ''}
+                            ${skipCount > 0 ? `<span class="neon-pill">${skipCount} skipped date${skipCount > 1 ? 's' : ''}</span>` : ''}
                           </div>
                         </div>
                       </div>
-                      <button type="button" class="delete-icon-btn" data-action="delete-class" data-id="${escapeHtml(cls.id)}" aria-label="Delete class">&times;</button>
+                      <button type="button" class="delete-icon-btn" data-action="delete-class" data-id="${escapeHtml(cls.id)}" aria-label="Delete weekly class">&times;</button>
                     </div>
                   `;
                 }).join('')}
@@ -2277,15 +2555,47 @@
       }
     }
 
-    function openDaySheet(dateStr, editItemId = '') {
+    // อัปเดตหน้าตาของฟอร์มใน Day Sheet ตามประเภทที่เลือก (Task / Note / ★ Holiday สีขาว)
+    function syncDayFormModeUI() {
+      const isHoliday = currentItemType === 'holiday';
+      const daySheetContainer = document.getElementById('daySheetContainer');
+      const neonPickerSection = document.getElementById('neonPickerSection');
+      const holidayToggleRow = document.getElementById('holidaySkipToggleRow');
+      const timeRepeatRow = document.getElementById('timeRepeatRow');
+      const titleInput = document.getElementById('itemTitleInput');
+      const submitBtn = document.getElementById('saveItemSubmitBtn');
+      const editingId = document.getElementById('editingItemId').value;
+
+      document.querySelectorAll('[data-item-type]').forEach((b) => {
+        const match = b.dataset.itemType === currentItemType;
+        b.classList.toggle('active', match && !isHoliday);
+        b.classList.toggle('active-white', match && isHoliday);
+      });
+
+      if (isHoliday) {
+        daySheetContainer.style.setProperty('--active-form-neon', 'var(--neon-white)');
+        neonPickerSection.style.display = 'none';
+        holidayToggleRow.classList.add('visible');
+        timeRepeatRow.style.display = 'none';
+        titleInput.placeholder = 'e.g. Public Holiday, Mid-Semester Break, No Classes...';
+        submitBtn.textContent = editingId ? 'Update ★ Special Day' : '★ Save White Holiday / Special Day';
+      } else {
+        daySheetContainer.style.setProperty('--active-form-neon', neonCssVar(selectedItemNeon));
+        neonPickerSection.style.display = 'block';
+        holidayToggleRow.classList.remove('visible');
+        timeRepeatRow.style.display = 'grid';
+        titleInput.placeholder = currentItemType === 'note' ? 'e.g. Bring lab coat, Room changed...' : 'e.g. Finish UI Prototype, Read Ch.4...';
+        submitBtn.textContent = editingId ? 'Update Activity' : '+ Save Neon Activity';
+      }
+    }
+
+    function openDaySheet(dateStr, editItemId = '', presetType = '') {
       selectedDateStr = dateStr;
       const editingInput = document.getElementById('editingItemId');
       const titleInput = document.getElementById('itemTitleInput');
       const timeInput = document.getElementById('itemTimeInput');
       const repeatInput = document.getElementById('itemRepeatInput');
-      const submitBtn = document.getElementById('saveItemSubmitBtn');
       const captionEl = document.getElementById('formModeCaption');
-      const daySheetContainer = document.getElementById('daySheetContainer');
 
       if (editItemId) {
         const existing = state.items.find((i) => i.id === editItemId);
@@ -2295,23 +2605,22 @@
           timeInput.value = existing.time || '';
           repeatInput.value = existing.repeat || 'none';
           currentItemType = existing.type || 'task';
-          selectedItemNeon = normalizeNeon(existing.color, 'lime');
-          captionEl.textContent = 'Edit Activity';
-          submitBtn.textContent = 'Update Activity';
+          if (currentItemType !== 'holiday') {
+            selectedItemNeon = normalizeNeon(existing.color, 'lime');
+          }
+          captionEl.textContent = 'Edit Item';
         }
       } else {
         editingInput.value = '';
         titleInput.value = '';
         timeInput.value = '';
         repeatInput.value = 'none';
-        captionEl.textContent = 'Add Activity / TODO';
-        submitBtn.textContent = '+ Save Neon Activity';
+        if (presetType) currentItemType = presetType;
+        captionEl.textContent = 'Add to This Date';
       }
 
-      document.querySelectorAll('[data-item-type]').forEach((b) => b.classList.toggle('active', b.dataset.itemType === currentItemType));
       renderNeonPickers();
-      daySheetContainer.style.setProperty('--active-form-neon', neonCssVar(selectedItemNeon));
-
+      syncDayFormModeUI();
       renderAll();
       renderDaySheet(dateStr);
       document.getElementById('daySheetBackdrop').classList.add('open');
@@ -2322,6 +2631,46 @@
       document.getElementById('daySheetSub').textContent = DAYS_FULL[d.getDay()].toUpperCase();
       document.getElementById('daySheetTitle').textContent = formatReadableDate(dateStr);
       document.getElementById('daySheetTimeline').innerHTML = buildDayTimelineHtml(dateStr);
+    }
+
+    function openClassSheet(editClassId = '') {
+      const editingInput = document.getElementById('editingClassId');
+      const headingEl = document.getElementById('classSheetHeading');
+      const submitBtn = document.getElementById('saveClassSubmitBtn');
+      const nameInput = document.getElementById('classNameInput');
+      const roomInput = document.getElementById('classRoomInput');
+      const dayInput = document.getElementById('classDayInput');
+      const startInput = document.getElementById('classStartInput');
+      const endInput = document.getElementById('classEndInput');
+      const container = document.getElementById('classSheetContainer');
+
+      if (editClassId) {
+        const cls = state.classes.find((c) => c.id === editClassId);
+        if (cls) {
+          editingInput.value = cls.id;
+          nameInput.value = cls.name;
+          roomInput.value = cls.room || '';
+          dayInput.value = String(cls.day);
+          startInput.value = cls.start;
+          endInput.value = cls.end;
+          selectedClassNeon = normalizeNeon(cls.color, 'cyan');
+          headingEl.textContent = 'Edit Weekly Class';
+          submitBtn.textContent = 'Update Weekly Class';
+        }
+      } else {
+        editingInput.value = '';
+        nameInput.value = '';
+        roomInput.value = '';
+        dayInput.value = String(parseDateKey(selectedDateStr).getDay());
+        startInput.value = '09:00';
+        endInput.value = '10:30';
+        headingEl.textContent = 'New Weekly Class';
+        submitBtn.textContent = 'Save Weekly Class';
+      }
+
+      renderNeonPickers();
+      container.style.setProperty('--active-form-neon', neonCssVar(selectedClassNeon));
+      document.getElementById('classSheetBackdrop').classList.add('open');
     }
 
     function renderAll() {
@@ -2341,11 +2690,9 @@
 
       const now = new Date();
       const todayStr = formatDateKey(now);
-      const weekday = now.getDay();
       const nowMins = now.getHours() * 60 + now.getMinutes();
 
-      state.classes.forEach((cls) => {
-        if (Number(cls.day) !== weekday) return;
+      getActiveClassesForDate(todayStr).forEach((cls) => {
         const startMins = timeToMinutes(cls.start);
         const diff = startMins - nowMins;
         const notifyKey = `${todayStr}_${cls.id}`;
@@ -2366,7 +2713,7 @@
     }
 
     function exportBackupJson() {
-      const payload = { version: 3, exportedAt: new Date().toISOString(), data: state };
+      const payload = { version: 4, exportedAt: new Date().toISOString(), data: state };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -2398,17 +2745,18 @@
             day: Number(c.day ?? 1),
             start: String(c.start || '09:00'),
             end: String(c.end || '10:30'),
-            color: normalizeNeon(c.color, 'cyan')
+            color: normalizeNeon(c.color, 'cyan'),
+            excludedDates: Array.isArray(c.excludedDates) ? c.excludedDates.map(String) : []
           }));
 
           state.items = source.items.map((it) => ({
             id: String(it.id || uid()),
             title: String(it.title || 'Activity').slice(0, 140),
-            type: it.type === 'note' ? 'note' : 'task',
+            type: ['task', 'note', 'holiday'].includes(it.type) ? it.type : 'task',
             date: /^\d{4}-\d{2}-\d{2}$/.test(it.date) ? it.date : formatDateKey(new Date()),
             time: String(it.time || ''),
             repeat: ['none', 'daily', 'weekly'].includes(it.repeat) ? it.repeat : 'none',
-            color: normalizeNeon(it.color, 'lime'),
+            color: it.type === 'holiday' ? 'white' : normalizeNeon(it.color, 'lime'),
             done: Boolean(it.done),
             completedDates: Array.isArray(it.completedDates) ? it.completedDates.map(String) : []
           }));
@@ -2435,7 +2783,30 @@
     }
 
     /* ==========================================================================
-       ผูกเหตุการณ์ (Event Listeners) ทั้งหมด + กดค้างเพื่อรีเซ็ตเวลา 25 นาที
+       ฟังก์ชันช่วยเพิ่มการปัดนิ้วซ้าย/ขวาแบบ iPhone (Swipe Gesture Helper)
+       ========================================================================== */
+    function bindHorizontalSwipe(el, onSwipeLeft, onSwipeRight) {
+      let startX = 0;
+      let startY = 0;
+      el.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+
+      el.addEventListener('touchend', (e) => {
+        if (!e.changedTouches || e.changedTouches.length !== 1) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        if (Math.abs(dx) > 55 && Math.abs(dy) < 45) {
+          if (dx < 0) onSwipeLeft();
+          else onSwipeRight();
+        }
+      }, { passive: true });
+    }
+
+    /* ==========================================================================
+       ผูกเหตุการณ์ (Event Listeners) ทั้งหมด
        ========================================================================== */
     function initEvents() {
       renderNeonPickers();
@@ -2450,7 +2821,7 @@
         });
       });
 
-      // สลับมุมมองในหน้า TODO (Focus Column vs 3-Day Columns Board)
+      // สลับโหมดดูคอลัมน์ในหน้า TODO
       document.querySelectorAll('[data-todoview]').forEach((btn) => {
         btn.addEventListener('click', () => {
           activeTodoView = btn.dataset.todoview;
@@ -2458,6 +2829,15 @@
           document.getElementById('todoSingleColumnPane').style.display = activeTodoView === 'single' ? 'block' : 'none';
           document.getElementById('todoBoardPane').style.display = activeTodoView === 'board' ? 'block' : 'none';
         });
+      });
+
+      // กรองรายการ TODO ตามสถานะ
+      document.getElementById('todoFilterStrip').addEventListener('click', (e) => {
+        const pill = e.target.closest('[data-filter]');
+        if (!pill) return;
+        activeTodoFilter = pill.dataset.filter;
+        document.querySelectorAll('#todoFilterStrip .filter-pill').forEach((p) => p.classList.toggle('active', p === pill));
+        renderTodoTab();
       });
 
       // แตะกรอบวันข้างบนในหน้า TODO เพื่อให้วันนั้นเลื่อนมาอยู่ตรงกลางทันที
@@ -2468,14 +2848,27 @@
         renderAll();
       });
 
-      // ฟอร์มพิมพ์เพิ่ม TODO ด่วนในหน้า TODO
+      // ปัดซ้าย-ขวาบนแถบกรอบวันของหน้า TODO เพื่อเลื่อนวัน
+      bindHorizontalSwipe(
+        document.getElementById('todoDayStrip'),
+        () => { selectedDateStr = addDays(selectedDateStr, 1); renderAll(); },
+        () => { selectedDateStr = addDays(selectedDateStr, -1); renderAll(); }
+      );
+
+      // ปัดซ้าย-ขวาบนปฏิทินเพื่อเปลี่ยนเดือนแบบ iPhone
+      bindHorizontalSwipe(
+        document.getElementById('calSwipeZone'),
+        () => { calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + 1, 1); renderCalendarTab(); },
+        () => { calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() - 1, 1); renderCalendarTab(); }
+      );
+
+      // ฟอร์มพิมพ์เพิ่ม TODO ด่วน
       document.getElementById('quickTodoForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const input = document.getElementById('quickTodoInput');
         const title = input.value.trim();
         if (!title) return;
 
-        // สลับสีนีออนอัตโนมัติให้สวยงามตามลำดับรายการ
         const autoNeon = NEON_KEYS[state.items.length % NEON_KEYS.length];
         state.items.push({
           id: uid(),
@@ -2523,20 +2916,21 @@
       document.getElementById('calendarGrid').addEventListener('click', (e) => {
         const cell = e.target.closest('.cal-cell');
         if (!cell) return;
-        openDaySheet(cell.dataset.date);
+        openDaySheet(cell.dataset.date, '', 'task');
       });
 
-      // ปุ่มเปิดหน้าต่างเพิ่มกิจกรรม
-      document.getElementById('calQuickAddBtn').addEventListener('click', () => openDaySheet(selectedDateStr));
-      document.getElementById('calBottomAddBtn').addEventListener('click', () => openDaySheet(selectedDateStr));
-      document.getElementById('addTodoItemBtn').addEventListener('click', () => openDaySheet(selectedDateStr));
-      document.getElementById('boardAddTodoBtn').addEventListener('click', () => openDaySheet(selectedDateStr));
+      // ปุ่มเปิดหน้าต่างเพิ่มกิจกรรม หรือเพิ่มวันหยุดสีขาว
+      document.getElementById('calAddHolidayBtn').addEventListener('click', () => openDaySheet(selectedDateStr, '', 'holiday'));
+      document.getElementById('calQuickAddBtn').addEventListener('click', () => openDaySheet(selectedDateStr, '', 'task'));
+      document.getElementById('calBottomAddBtn').addEventListener('click', () => openDaySheet(selectedDateStr, '', 'task'));
+      document.getElementById('addTodoItemBtn').addEventListener('click', () => openDaySheet(selectedDateStr, '', 'task'));
+      document.getElementById('boardAddTodoBtn').addEventListener('click', () => openDaySheet(selectedDateStr, '', 'task'));
 
-      // สลับประเภท Task / Note ใน Bottom Sheet
+      // สลับประเภท Task / Note / ★ Holiday ใน Bottom Sheet
       document.querySelectorAll('[data-item-type]').forEach((btn) => {
         btn.addEventListener('click', () => {
           currentItemType = btn.dataset.itemType;
-          document.querySelectorAll('[data-item-type]').forEach((b) => b.classList.toggle('active', b === btn));
+          syncDayFormModeUI();
         });
       });
 
@@ -2550,24 +2944,27 @@
         daySheetContainer.style.setProperty('--active-form-neon', neonCssVar(selectedItemNeon));
       });
 
-      // บันทึกหรืออัปเดตกิจกรรม
+      // บันทึกกิจกรรมใหม่ หรือบันทึกวันหยุดสีขาว (พร้อมงดคลาสเรียนในวันนั้นหากติ๊กไว้)
       document.getElementById('dayItemForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const editingId = document.getElementById('editingItemId').value;
         const titleInput = document.getElementById('itemTitleInput');
         const timeInput = document.getElementById('itemTimeInput');
         const repeatInput = document.getElementById('itemRepeatInput');
+        const skipClassesCheck = document.getElementById('holidaySkipClassesCheck');
         const title = titleInput.value.trim();
         if (!title) return;
+
+        const isHoliday = currentItemType === 'holiday';
 
         if (editingId) {
           const item = state.items.find((i) => i.id === editingId);
           if (item) {
             item.title = title;
             item.type = currentItemType;
-            item.time = timeInput.value || '';
-            item.repeat = repeatInput.value || 'none';
-            item.color = selectedItemNeon;
+            item.time = isHoliday ? '' : (timeInput.value || '');
+            item.repeat = isHoliday ? 'none' : (repeatInput.value || 'none');
+            item.color = isHoliday ? 'white' : selectedItemNeon;
           }
         } else {
           state.items.push({
@@ -2575,11 +2972,24 @@
             title,
             type: currentItemType,
             date: selectedDateStr,
-            time: timeInput.value || '',
-            repeat: repeatInput.value || 'none',
-            color: selectedItemNeon,
+            time: isHoliday ? '' : (timeInput.value || ''),
+            repeat: isHoliday ? 'none' : (repeatInput.value || 'none'),
+            color: isHoliday ? 'white' : selectedItemNeon,
             done: false,
             completedDates: []
+          });
+        }
+
+        // หากเป็นวันหยุดและผู้ใช้เลือกงดคลาสเรียนในวันนั้น ให้ข้ามคลาสประจำสัปดาห์เฉพาะวันที่เลือกอัตโนมัติ
+        if (isHoliday && skipClassesCheck.checked) {
+          const weekday = parseDateKey(selectedDateStr).getDay();
+          state.classes.forEach((cls) => {
+            if (Number(cls.day) === weekday) {
+              if (!Array.isArray(cls.excludedDates)) cls.excludedDates = [];
+              if (!cls.excludedDates.includes(selectedDateStr)) {
+                cls.excludedDates.push(selectedDateStr);
+              }
+            }
           });
         }
 
@@ -2587,8 +2997,8 @@
         titleInput.value = '';
         timeInput.value = '';
         repeatInput.value = 'none';
-        document.getElementById('formModeCaption').textContent = 'Add Activity / TODO';
-        document.getElementById('saveItemSubmitBtn').textContent = '+ Save Neon Activity';
+        currentItemType = 'task';
+        syncDayFormModeUI();
         saveState();
         renderAll();
         renderDaySheet(selectedDateStr);
@@ -2605,15 +3015,12 @@
         classSheetContainer.style.setProperty('--active-form-neon', neonCssVar(selectedClassNeon));
       });
 
-      const openClassModal = () => {
-        document.getElementById('classDayInput').value = String(parseDateKey(selectedDateStr).getDay());
-        document.getElementById('classSheetBackdrop').classList.add('open');
-      };
-      document.getElementById('openAddClassBtn').addEventListener('click', openClassModal);
-      document.getElementById('openAddClassBottomBtn').addEventListener('click', openClassModal);
+      document.getElementById('openAddClassBtn').addEventListener('click', () => openClassSheet(''));
+      document.getElementById('openAddClassBottomBtn').addEventListener('click', () => openClassSheet(''));
 
       document.getElementById('addClassForm').addEventListener('submit', (e) => {
         e.preventDefault();
+        const editingClassId = document.getElementById('editingClassId').value;
         const name = document.getElementById('classNameInput').value.trim();
         const room = document.getElementById('classRoomInput').value.trim();
         const day = Number(document.getElementById('classDayInput').value);
@@ -2621,16 +3028,30 @@
         const end = document.getElementById('classEndInput').value;
         if (!name || !start || !end) return;
 
-        state.classes.push({
-          id: uid(),
-          name,
-          room,
-          day,
-          start,
-          end,
-          color: selectedClassNeon
-        });
+        if (editingClassId) {
+          const cls = state.classes.find((c) => c.id === editingClassId);
+          if (cls) {
+            cls.name = name;
+            cls.room = room;
+            cls.day = day;
+            cls.start = start;
+            cls.end = end;
+            cls.color = selectedClassNeon;
+          }
+        } else {
+          state.classes.push({
+            id: uid(),
+            name,
+            room,
+            day,
+            start,
+            end,
+            color: selectedClassNeon,
+            excludedDates: []
+          });
+        }
 
+        document.getElementById('editingClassId').value = '';
         document.getElementById('classNameInput').value = '';
         document.getElementById('classRoomInput').value = '';
         document.getElementById('classSheetBackdrop').classList.remove('open');
@@ -2661,7 +3082,7 @@
         renderAll();
       });
 
-      // Event Delegation สำหรับติ๊กงาน, แก้ไขงาน และลบรายการ
+      // Event Delegation สำหรับติ๊กงาน, แก้ไขงาน, ลบคลาสเฉพาะวันหยุด และคืนค่าคลาส
       document.body.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-action]');
         if (!btn) return;
@@ -2674,6 +3095,12 @@
           openDaySheet(selectedDateStr, id);
         } else if (action === 'delete-item') {
           deleteItem(id);
+        } else if (action === 'skip-class-date') {
+          skipClassOnDate(id, btn.dataset.date || selectedDateStr);
+        } else if (action === 'restore-skipped-date') {
+          restoreSkippedClassesOnDate(btn.dataset.date || selectedDateStr);
+        } else if (action === 'edit-class') {
+          openClassSheet(id);
         } else if (action === 'delete-class') {
           state.classes = state.classes.filter((c) => c.id !== id);
           saveState();
@@ -2725,28 +3152,69 @@
         }
       });
 
-      // โหลดข้อมูลตัวอย่าง 10 สีีออนเพื่อดูในกรอบปฏิทินและคอลัมน์ TODO ทันที
+      // โหลดข้อมูลตัวอย่าง 10 สีีออน + ตัวอย่างวันหยุดสีขาวที่งดคลาสเรียนในสัปดาห์หน้าอัตโนมัติ
       document.getElementById('loadSampleBtn').addEventListener('click', () => {
         const now = new Date();
         const todayStr = formatDateKey(now);
         const todayDay = now.getDay();
+        const nextWeekSameDayStr = addDays(todayStr, 7);
 
         state.classes = [
-          { id: uid(), name: 'iOS UI Architecture', room: 'STUDIO 4', day: todayDay, start: '09:30', end: '11:30', color: 'cyan' },
-          { id: uid(), name: 'Data Structures & Algos', room: 'CS 302', day: todayDay, start: '13:00', end: '15:00', color: 'violet' },
-          { id: uid(), name: 'Machine Learning Lab', room: 'AI 101', day: (todayDay + 1) % 7, start: '10:00', end: '12:00', color: 'emerald' },
-          { id: uid(), name: 'Startup Product Strategy', room: 'BIZ 204', day: (todayDay + 2) % 7, start: '14:00', end: '16:00', color: 'sky' }
+          {
+            id: uid(),
+            name: 'iOS UI Architecture',
+            room: 'STUDIO 4',
+            day: todayDay,
+            start: '09:30',
+            end: '11:30',
+            color: 'cyan',
+            excludedDates: [nextWeekSameDayStr] // ตัวอย่างงดคลาสเฉพาะสัปดาห์หน้าเนื่องจากวันหยุด
+          },
+          {
+            id: uid(),
+            name: 'Data Structures & Algos',
+            room: 'CS 302',
+            day: todayDay,
+            start: '13:00',
+            end: '15:00',
+            color: 'violet',
+            excludedDates: [nextWeekSameDayStr]
+          },
+          {
+            id: uid(),
+            name: 'Machine Learning Lab',
+            room: 'AI 101',
+            day: (todayDay + 1) % 7,
+            start: '10:00',
+            end: '12:00',
+            color: 'emerald',
+            excludedDates: []
+          },
+          {
+            id: uid(),
+            name: 'Startup Product Strategy',
+            room: 'BIZ 204',
+            day: (todayDay + 2) % 7,
+            start: '14:00',
+            end: '16:00',
+            color: 'sky',
+            excludedDates: []
+          }
         ];
+
         state.items = [
+          { id: uid(), title: 'Chulalongkorn Memorial Day', type: 'holiday', date: '2026-10-23', time: '', repeat: 'none', color: 'white', done: false, completedDates: [] },
+          { id: uid(), title: 'University Holiday (No Classes)', type: 'holiday', date: nextWeekSameDayStr, time: '', repeat: 'none', color: 'white', done: false, completedDates: [] },
           { id: uid(), title: 'Finalize App Prototype', type: 'task', date: todayStr, time: '16:00', repeat: 'none', color: 'lime', done: false, completedDates: [] },
           { id: uid(), title: 'Submit Calculus Problem Set', type: 'task', date: todayStr, time: '18:00', repeat: 'none', color: 'coral', done: false, completedDates: [] },
           { id: uid(), title: 'Gym & Cardio Session 45m', type: 'task', date: todayStr, time: '19:30', repeat: 'daily', color: 'magenta', done: false, completedDates: [] },
-          { id: uid(), title: 'Book Library Discussion Room', type: 'note', date: addDays(todayStr, 1), time: '11:00', repeat: 'none', color: 'lemon', done: false, completedDates: [] },
-          { id: uid(), title: 'Prepare Team Sprint Slides', type: 'task', date: addDays(todayStr, -1), time: '15:00', repeat: 'none', color: 'amber', done: true, completedDates: [] }
+          { id: uid(), title: 'Book Library Discussion Room', type: 'note', date: addDays(todayStr, 1), time: '11:00', repeat: 'none', color: 'lemon', done: false, completedDates: [] }
         ];
+
         state.exams = [
           { id: uid(), title: 'Algorithms Midterm', date: addDays(todayStr, 4), time: '09:00', room: 'Grand Hall A' }
         ];
+
         selectedDateStr = todayStr;
         saveState();
         renderAll();
