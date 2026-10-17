@@ -1,0 +1,2389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+  <!-- ตั้งค่าสำหรับ PWA บน iPhone (iOS Standalone Home Screen App) -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Timing" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#09090b" />
+  <meta name="description" content="Luxury minimalist iOS schedule, calendar, and neon activity planner for university students" />
+
+  <title>Timing</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="./icon-180.png" />
+
+  <!-- ฟอนต์ SF Pro (iOS Native) พร้อม IBM Plex Sans Thai และ JetBrains/IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       1. ระบบสี Obsidian Luxury & Neon Accents สำหรับ iPhone (Dark Luxury + Light Option)
+       ========================================================================== */
+    :root {
+      /* พื้นหลังดำลึกสไตล์ iOS OLED (Obsidian & Carbon Glass) */
+      --bg: #08080a;
+      --surface: #121216;
+      --surface-elevated: #18181e;
+      --surface-glass: rgba(20, 20, 26, 0.78);
+      --sheet-glass: rgba(16, 16, 21, 0.94);
+
+      --text: #f5f5f7;
+      --text-secondary: #a1a1aa;
+      --text-muted: #63636e;
+
+      --border: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.14);
+
+      /* 5 สีีออนเรียบหรูตัดกับสีดำ (Luxury Neon Palette) */
+      --neon-lime: #c8ff2e;
+      --neon-lime-soft: rgba(200, 255, 46, 0.12);
+      --neon-lime-border: rgba(200, 255, 46, 0.34);
+
+      --neon-cyan: #38f2ff;
+      --neon-cyan-soft: rgba(56, 242, 255, 0.12);
+      --neon-cyan-border: rgba(56, 242, 255, 0.34);
+
+      --neon-rose: #ff4d8d;
+      --neon-rose-soft: rgba(255, 77, 141, 0.13);
+      --neon-rose-border: rgba(255, 77, 141, 0.36);
+
+      --neon-violet: #b66dff;
+      --neon-violet-soft: rgba(182, 109, 255, 0.13);
+      --neon-violet-border: rgba(182, 109, 255, 0.36);
+
+      --neon-amber: #ffb82e;
+      --neon-amber-soft: rgba(255, 184, 46, 0.13);
+      --neon-amber-border: rgba(255, 184, 46, 0.36);
+
+      /* สีหลักของอินเทอร์เฟซ */
+      --accent: var(--neon-lime);
+      --accent-ink: #08080a;
+
+      --backdrop: rgba(0, 0, 0, 0.68);
+
+      /* ฟอนต์ระบบ iPhone (SF Pro) เป็นอันดับแรก เพื่อสัมผัสแบบ Native iOS */
+      --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', 'IBM Plex Sans Thai', system-ui, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    /* โหมดสว่างแบบ Luxury Onyx & Pearl (หากผู้ใช้สลับใน Settings) */
+    html[data-theme="light"] {
+      --bg: #f4f4f6;
+      --surface: #ffffff;
+      --surface-elevated: #ebebf0;
+      --surface-glass: rgba(255, 255, 255, 0.82);
+      --sheet-glass: rgba(248, 248, 250, 0.96);
+
+      --text: #09090b;
+      --text-secondary: #52525b;
+      --text-muted: #8e8e98;
+
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+    }
+
+    /* ==========================================================================
+       2. รีเซ็ตและโครงสร้างพื้นฐานสไตล์ iOS
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      min-height: 100%;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.45;
+      letter-spacing: -0.011em;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overscroll-behavior-y: none;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ==========================================================================
+       3. เลย์เอาต์หลักสำหรับ iPhone (Safe Area + Floating Capsule Dock)
+       ========================================================================== */
+    .app-shell {
+      max-width: 460px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(var(--safe-top) + 6px);
+      padding-left: var(--safe-left);
+      padding-right: var(--safe-right);
+      padding-bottom: calc(96px + var(--safe-bottom));
+    }
+
+    /* ส่วนหัวสไตล์ iOS Large Title */
+    .ios-header {
+      padding: 14px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 15;
+      background: linear-gradient(180deg, var(--bg) 70%, rgba(8, 8, 10, 0));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1px;
+    }
+
+    .large-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.032em;
+      line-height: 1.15;
+      color: var(--text);
+    }
+
+    .header-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ปุ่มทรงแคปซูลสไตล์ iOS (อย่างน้อย 44px สำหรับนิ้วสัมผัส) */
+    .pill-btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background-color: var(--surface);
+      border: 1px solid var(--border-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .pill-btn:active {
+      transform: scale(0.96);
+    }
+
+    .pill-btn.timer-running {
+      border-color: var(--neon-lime);
+      color: var(--neon-lime);
+      background-color: var(--neon-lime-soft);
+    }
+
+    .pill-btn.neon-cta {
+      background-color: var(--neon-lime);
+      border-color: var(--neon-lime);
+      color: #08080a;
+      font-weight: 600;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* แบนเนอร์แจ้งเตือนก่อนเข้าเรียน */
+    .reminder-banner {
+      display: none;
+      margin: 4px 20px 10px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      background-color: var(--neon-cyan-soft);
+      border: 1px solid var(--neon-cyan-border);
+      color: var(--text);
+      font-size: 13px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .reminder-banner.visible {
+      display: flex;
+    }
+
+    .tab-view {
+      display: none;
+      flex: 1;
+      padding: 0 18px;
+    }
+
+    .tab-view.active {
+      display: block;
+    }
+
+    /* ==========================================================================
+       4. การ์ดปฏิทินสไตล์ iOS Luxury (Squircle 26px + Neon Date Ring & Bars)
+       ========================================================================== */
+    .luxury-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 18px 14px 16px;
+      margin-bottom: 18px;
+    }
+
+    .cal-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px 14px;
+    }
+
+    .cal-month-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .cal-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cal-nav-btn {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cal-nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 6px;
+    }
+
+    .cal-weekdays span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      row-gap: 4px;
+    }
+
+    .cal-cell {
+      min-height: 54px;
+      border-radius: 16px;
+      padding: 5px 2px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      transition: background-color 0.15s ease;
+    }
+
+    .cal-cell:active {
+      background-color: var(--surface-elevated);
+    }
+
+    .cal-cell.is-outside {
+      opacity: 0.25;
+    }
+
+    .cal-day-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* วันนี้: วงแหวนสีนีออน */
+    .cal-cell.is-today .cal-day-num {
+      border: 1.5px solid var(--neon-lime);
+      color: var(--neon-lime);
+      font-weight: 700;
+    }
+
+    /* วันที่เลือกอยู่: พื้นสีนีออนไลม์ ตัวอักษรสีดำเข้ม */
+    .cal-cell.is-selected .cal-day-num {
+      background-color: var(--neon-lime);
+      color: #08080a;
+      font-weight: 700;
+    }
+
+    /* แถบสีนีออนขนาดเล็กใต้วันที่ในปฏิทิน */
+    .cal-indicators {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 5px;
+    }
+
+    .cal-neon-pill {
+      width: 10px;
+      height: 3.5px;
+      border-radius: 99px;
+    }
+
+    .cal-class-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       5. แถบสีนีออนสำหรับกิจกรรม คาบเรียน และสิ่งที่ต้องทำ (Neon Activity Cards)
+       ========================================================================== */
+    .neon-lime { --item-neon: var(--neon-lime); --item-soft: var(--neon-lime-soft); --item-border: var(--neon-lime-border); }
+    .neon-cyan { --item-neon: var(--neon-cyan); --item-soft: var(--neon-cyan-soft); --item-border: var(--neon-cyan-border); }
+    .neon-rose { --item-neon: var(--neon-rose); --item-soft: var(--neon-rose-soft); --item-border: var(--neon-rose-border); }
+    .neon-violet { --item-neon: var(--neon-violet); --item-soft: var(--neon-violet-soft); --item-border: var(--neon-violet-border); }
+    .neon-amber { --item-neon: var(--neon-amber); --item-soft: var(--neon-amber-soft); --item-border: var(--neon-amber-border); }
+
+    .section-block {
+      margin-bottom: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px 10px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label.overdue {
+      color: var(--neon-rose);
+    }
+
+    .badge-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background-color: var(--surface);
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+    }
+
+    .action-link {
+      min-height: 44px;
+      padding: 0 10px;
+      margin: -10px -6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--neon-lime);
+    }
+
+    .card-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* การ์ดแต่ละรายการมีแถบสีนีออนด้านซ้ายตัดกับพื้นสีดำ */
+    .activity-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 14px 14px 14px 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    /* แถบสีนีออนด้านซ้ายของการ์ด */
+    .activity-card::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 12px;
+      bottom: 12px;
+      width: 4px;
+      border-radius: 99px;
+      background-color: var(--item-neon, var(--neon-lime));
+    }
+
+    /* ไฮไลต์คาบเรียนที่กำลังเรียนอยู่ (Active Class Now) */
+    .activity-card.is-live {
+      background-color: var(--item-soft, var(--neon-lime-soft));
+      border-color: var(--item-border, var(--neon-lime-border));
+    }
+
+    .activity-card.is-past {
+      opacity: 0.45;
+    }
+
+    .activity-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    /* ปุ่มติ๊กงานทรงกลมสไตล์ iOS Reminders */
+    .ios-check-btn {
+      width: 44px;
+      height: 44px;
+      margin: -10px -6px -10px -8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ios-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--item-neon, var(--neon-lime));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      transition: background-color 0.15s ease;
+    }
+
+    .activity-card.is-done .ios-circle {
+      background-color: var(--item-neon, var(--neon-lime));
+      color: #08080a;
+    }
+
+    .activity-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .activity-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+      line-height: 1.3;
+    }
+
+    .activity-card.is-done .activity-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .activity-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    /* ป้ายแคปซูลสีนีออนโปร่งแสง */
+    .neon-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background-color: var(--item-soft, var(--neon-lime-soft));
+      border: 1px solid var(--item-border, var(--neon-lime-border));
+      color: var(--item-neon, var(--neon-lime));
+      white-space: nowrap;
+    }
+
+    .neon-pill.solid-live {
+      background-color: var(--item-neon, var(--neon-lime));
+      color: #08080a;
+      font-weight: 700;
+    }
+
+    .delete-icon-btn {
+      width: 44px;
+      height: 44px;
+      margin: -8px -8px -8px 0;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .delete-icon-btn:active {
+      color: var(--neon-rose);
+      background-color: var(--neon-rose-soft);
+    }
+
+    /* แถบกดเพิ่มกิจกรรมสไตล์นีออนตัดพื้นดำ */
+    .neon-add-bar {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 20px;
+      background-color: var(--surface);
+      border: 1px dashed var(--neon-lime-border);
+      color: var(--neon-lime);
+      font-size: 14.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .neon-add-bar:active {
+      background-color: var(--neon-lime-soft);
+      transform: scale(0.99);
+    }
+
+    .empty-box {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13.5px;
+    }
+
+    /* เส้นบอกเวลาว่างระหว่างคาบเรียน */
+    .break-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .break-divider::before,
+    .break-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: var(--border);
+    }
+
+    /* ==========================================================================
+       6. iOS Segmented Control (สลับแท็บย่อยแบบแคปซูล)
+       ========================================================================== */
+    .ios-segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 4px;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      margin-bottom: 18px;
+    }
+
+    .ios-seg-btn {
+      min-height: 40px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+    }
+
+    .ios-seg-btn.active {
+      background-color: var(--neon-lime);
+      color: #08080a;
+    }
+
+    /* ==========================================================================
+       7. Floating iOS Glass Dock (แท็บนำทางด้านล่างแบบลอยตัวสไตล์ iPhone)
+       ========================================================================== */
+    .ios-dock-wrap {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: calc(12px + var(--safe-bottom));
+      z-index: 30;
+      display: flex;
+      justify-content: center;
+      padding: 0 20px;
+      pointer-events: none;
+    }
+
+    .ios-dock {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 380px;
+      height: 64px;
+      padding: 6px;
+      border-radius: 999px;
+      background-color: var(--surface-glass);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--border-strong);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .dock-tab {
+      border-radius: 999px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      color: var(--text-secondary);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: all 0.18s ease;
+    }
+
+    .dock-tab svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+    }
+
+    .dock-tab.active {
+      background-color: var(--neon-lime);
+      color: #08080a;
+    }
+
+    /* ==========================================================================
+       8. iOS Cupertino Bottom Sheet & Neon Activity Creator
+       ========================================================================== */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: var(--backdrop);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 50;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .sheet-backdrop.open {
+      display: flex;
+    }
+
+    .ios-sheet {
+      width: 100%;
+      max-width: 460px;
+      max-height: 90dvh;
+      background-color: var(--sheet-glass);
+      backdrop-filter: blur(32px) saturate(190%);
+      -webkit-backdrop-filter: blur(32px) saturate(190%);
+      border-top: 1px solid var(--border-strong);
+      border-radius: 30px 30px 0 0;
+      padding: 10px 20px calc(24px + var(--safe-bottom));
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet-grabber {
+      width: 40px;
+      height: 5px;
+      border-radius: 99px;
+      background-color: var(--border-strong);
+      margin: 0 auto 14px;
+      flex-shrink: 0;
+    }
+
+    .sheet-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .sheet-heading {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* ฟอร์มสร้างกิจกรรมพร้อมแถบสีนีออน (Neon Activity Bar Selector) */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .field-caption {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    /* ช่องกรอกข้อความที่มีแถบสีนีออนด้านซ้ายเปลี่ยนตามสีที่เลือกสด ๆ */
+    .neon-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .neon-input-bar {
+      position: absolute;
+      left: 8px;
+      top: 10px;
+      bottom: 10px;
+      width: 4px;
+      border-radius: 99px;
+      background-color: var(--active-form-neon, var(--neon-lime));
+      transition: background-color 0.15s ease;
+    }
+
+    .ios-input, .ios-select {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: 16px;
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .neon-input-wrap .ios-input {
+      padding-left: 22px;
+    }
+
+    .ios-input:focus, .ios-select:focus {
+      border-color: var(--active-form-neon, var(--neon-lime));
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* แถบปุ่มเลือกสีนีออน 5 เฉดสีเมื่อเพิ่มกิจกรรม */
+    .neon-selector-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .neon-choice-btn {
+      min-height: 48px;
+      border-radius: 14px;
+      background-color: var(--surface-elevated);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+    }
+
+    .neon-choice-bar {
+      width: 24px;
+      height: 5px;
+      border-radius: 99px;
+      background-color: var(--item-neon);
+    }
+
+    .neon-choice-btn.selected {
+      border-color: var(--item-neon);
+      background-color: var(--item-soft);
+      color: var(--item-neon);
+    }
+
+    /* ปุ่มยืนยันหลักที่เปลี่ยนสีตามแถบนีออนที่เลือก */
+    .neon-submit-btn {
+      width: 100%;
+      min-height: 50px;
+      border-radius: 18px;
+      background-color: var(--active-form-neon, var(--neon-lime));
+      color: #08080a;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .neon-submit-btn:active {
+      transform: scale(0.98);
+      opacity: 0.92;
+    }
+
+    .ios-secondary-btn {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 16px;
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ios-secondary-btn:active {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- แบนเนอร์แจ้งเตือนก่อนเข้าเรียน -->
+    <div id="reminderBanner" class="reminder-banner" role="status" aria-live="polite">
+      <span id="reminderText"></span>
+      <button type="button" class="action-link" id="dismissReminderBtn">OK</button>
+    </div>
+
+    <!-- ส่วนหัวสไตล์ iPhone Large Title -->
+    <header class="ios-header">
+      <div>
+        <div class="eyebrow" id="headerSubtitle">SCHEDULE &amp; PLANNER</div>
+        <h1 class="large-title" id="headerTitle">Calendar</h1>
+      </div>
+      <div class="header-pills">
+        <button type="button" class="pill-btn mono" id="focusTimerBtn" title="Tap to start/pause 25m Focus Timer, double-tap to reset">
+          <span id="focusTimerLabel">25:00</span>
+        </button>
+        <button type="button" class="pill-btn" id="openSettingsBtn" aria-label="Settings and Backup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         TAB 1 (HOME SCREEN): CALENDAR (ปฏิทินรายเดือน + ไทม์ไลน์ของวันที่เลือก + แถบเพิ่มกิจกรรมสีนีออน)
+         ====================================================================== -->
+    <main id="tab-calendar" class="tab-view active">
+      <div class="luxury-card">
+        <div class="cal-header-bar">
+          <div class="cal-month-title" id="calMonthLabel">October 2026</div>
+          <div class="cal-controls">
+            <button type="button" class="cal-nav-btn" id="calPrevBtn" aria-label="Previous month">&lsaquo;</button>
+            <button type="button" class="cal-nav-btn" id="calTodayBtn">Today</button>
+            <button type="button" class="cal-nav-btn" id="calNextBtn" aria-label="Next month">&rsaquo;</button>
+          </div>
+        </div>
+
+        <div class="cal-weekdays">
+          <span>MON</span>
+          <span>TUE</span>
+          <span>WED</span>
+          <span>THU</span>
+          <span>FRI</span>
+          <span>SAT</span>
+          <span>SUN</span>
+        </div>
+
+        <div id="calendarGrid" class="cal-grid"></div>
+      </div>
+
+      <!-- แสดงกิจกรรมของวันที่เลือกทันทีด้านล่างปฏิทิน พร้อมปุ่มเพิ่มกิจกรรมสีนีออน -->
+      <section class="section-block">
+        <div class="section-head">
+          <span class="section-label" id="calSelectedDateLabel">SELECTED DAY</span>
+          <button type="button" class="action-link" id="calQuickAddBtn">+ Add Activity</button>
+        </div>
+        <div id="calSelectedDayList" class="card-stack"></div>
+        <button type="button" class="neon-add-bar" id="calBottomAddBtn">+ Add Neon Activity for This Day</button>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         TAB 2: TODAY (โฟกัสวันนี้: สอบที่ใกล้ถึง, งานค้าง, คาบเรียนวันนี้, งานวันนี้)
+         ====================================================================== -->
+    <main id="tab-today" class="tab-view">
+      <!-- นับถอยหลังวันสอบ -->
+      <section id="todayExamsSection" class="section-block" style="display: none;">
+        <div class="section-head">
+          <span class="section-label">Upcoming Exams</span>
+          <span class="badge-count" id="todayExamsCount">0</span>
+        </div>
+        <div id="todayExamsList" class="card-stack"></div>
+      </section>
+
+      <!-- หมวดงานค้าง (Overdue) -->
+      <section id="overdueSection" class="section-block" style="display: none;">
+        <div class="section-head">
+          <span class="section-label overdue">Overdue Tasks</span>
+          <span class="badge-count" id="overdueCount">0</span>
+        </div>
+        <div id="overdueList" class="card-stack"></div>
+      </section>
+
+      <!-- หมวดคาบเรียนวันนี้ -->
+      <section class="section-block">
+        <div class="section-head">
+          <span class="section-label">Today's Classes</span>
+          <span class="badge-count" id="todayClassCount">0</span>
+        </div>
+        <div id="todayClassesList" class="card-stack"></div>
+      </section>
+
+      <!-- หมวดกิจกรรม งาน และโน้ตของวันนี้ -->
+      <section class="section-block">
+        <div class="section-head">
+          <span class="section-label">Today's Activities</span>
+          <button type="button" class="action-link" id="addTodayItemBtn">+ Add</button>
+        </div>
+        <div id="todayTasksList" class="card-stack"></div>
+        <button type="button" class="neon-add-bar" id="addTodayItemBottomBtn">+ New Activity for Today</button>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         TAB 3: CLASSES (ตารางเรียนประจำสัปดาห์ & ตารางสอบนับถอยหลัง)
+         ====================================================================== -->
+    <main id="tab-classes" class="tab-view">
+      <div class="ios-segmented">
+        <button type="button" class="ios-seg-btn active" data-subtab="weekly">Weekly Classes</button>
+        <button type="button" class="ios-seg-btn" data-subtab="exams">Exams &amp; Countdowns</button>
+      </div>
+
+      <!-- ตารางเรียนประจำสัปดาห์ -->
+      <div id="weeklyClassesPane">
+        <div class="section-head">
+          <span class="section-label">Recurring Timetable</span>
+          <button type="button" class="action-link" id="openAddClassBtn">+ Add Class</button>
+        </div>
+        <div id="weeklyClassesList"></div>
+        <button type="button" class="neon-add-bar" id="openAddClassBottomBtn">+ Add Weekly Class</button>
+      </div>
+
+      <!-- ตารางสอบและวันส่งงานสำคัญ -->
+      <div id="examsPane" style="display: none;">
+        <div class="section-head">
+          <span class="section-label">Exam Schedule</span>
+          <button type="button" class="action-link" id="openAddExamBtn">+ Add Exam</button>
+        </div>
+        <div id="examsList" class="card-stack"></div>
+        <button type="button" class="neon-add-bar" id="openAddExamBottomBtn">+ Add Exam / Deadline</button>
+      </div>
+    </main>
+
+    <!-- ======================================================================
+         FLOATING iOS GLASS DOCK (3 แท็บหลัก: Calendar หน้าแรก, Today, Classes)
+         ====================================================================== -->
+    <nav class="ios-dock-wrap" aria-label="Primary Navigation">
+      <div class="ios-dock">
+        <button type="button" class="dock-tab active" data-tab="calendar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="4" ry="4"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Calendar</span>
+        </button>
+
+        <button type="button" class="dock-tab" data-tab="today">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+          </svg>
+          <span>Today</span>
+        </button>
+
+        <button type="button" class="dock-tab" data-tab="classes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>Classes</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ========================================================================
+       BOTTOM SHEET 1: รายละเอียดของวัน + เพิ่มกิจกรรมพร้อมเลือกแถบสีนีออน
+       ======================================================================== -->
+  <div id="daySheetBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true">
+    <div class="ios-sheet" id="daySheetContainer">
+      <div class="sheet-grabber"></div>
+      <div class="sheet-topbar">
+        <div>
+          <div class="eyebrow" id="daySheetSub">SELECTED DATE</div>
+          <div class="sheet-heading" id="daySheetTitle">Date</div>
+        </div>
+        <button type="button" class="pill-btn" id="closeDaySheetBtn">Done</button>
+      </div>
+
+      <!-- รายการทั้งหมดของวันนั้น -->
+      <div id="daySheetTimeline" class="card-stack" style="margin-bottom: 18px;"></div>
+
+      <!-- ฟอร์มเพิ่มกิจกรรมพร้อมแถบสีนีออน -->
+      <form id="dayItemForm" class="form-group" style="border-top: 1px solid var(--border); padding-top: 16px;">
+        <div>
+          <span class="field-caption">New Activity Type</span>
+          <div class="ios-segmented" style="margin-bottom: 0;">
+            <button type="button" class="ios-seg-btn active" data-item-type="task">Task (Checkable)</button>
+            <button type="button" class="ios-seg-btn" data-item-type="note">Note / Event</button>
+          </div>
+        </div>
+
+        <div>
+          <span class="field-caption">Neon Bar Color</span>
+          <div class="neon-selector-row" id="itemNeonPicker">
+            <button type="button" class="neon-choice-btn neon-lime selected" data-neon="lime">
+              <span class="neon-choice-bar"></span>
+              <span>Lime</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-cyan" data-neon="cyan">
+              <span class="neon-choice-bar"></span>
+              <span>Cyan</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-rose" data-neon="rose">
+              <span class="neon-choice-bar"></span>
+              <span>Rose</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-violet" data-neon="violet">
+              <span class="neon-choice-bar"></span>
+              <span>Violet</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-amber" data-neon="amber">
+              <span class="neon-choice-bar"></span>
+              <span>Amber</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="field-caption" for="itemTitleInput">What needs to be done today?</label>
+          <div class="neon-input-wrap">
+            <span class="neon-input-bar"></span>
+            <input type="text" id="itemTitleInput" class="ios-input" placeholder="e.g. Finish UI Prototype, Gym at 6 PM..." maxlength="140" required />
+          </div>
+        </div>
+
+        <div class="grid-2col">
+          <div>
+            <label class="field-caption" for="itemTimeInput">Time (Optional)</label>
+            <input type="time" id="itemTimeInput" class="ios-input mono" />
+          </div>
+          <div>
+            <label class="field-caption" for="itemRepeatInput">Repeat</label>
+            <select id="itemRepeatInput" class="ios-select">
+              <option value="none">Once</option>
+              <option value="weekly">Every Week</option>
+              <option value="daily">Every Day</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="neon-submit-btn">+ Save Activity</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       BOTTOM SHEET 2: เพิ่มคาบเรียนประจำสัปดาห์ (Add Weekly Class)
+       ======================================================================== -->
+  <div id="classSheetBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true">
+    <div class="ios-sheet" id="classSheetContainer">
+      <div class="sheet-grabber"></div>
+      <div class="sheet-topbar">
+        <div class="sheet-heading">New Weekly Class</div>
+        <button type="button" class="pill-btn" id="closeClassSheetBtn">Cancel</button>
+      </div>
+
+      <form id="addClassForm" class="form-group">
+        <div>
+          <span class="field-caption">Course Neon Color</span>
+          <div class="neon-selector-row" id="classColorPicker">
+            <button type="button" class="neon-choice-btn neon-cyan selected" data-color="cyan">
+              <span class="neon-choice-bar"></span>
+              <span>Cyan</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-lime" data-color="lime">
+              <span class="neon-choice-bar"></span>
+              <span>Lime</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-violet" data-color="violet">
+              <span class="neon-choice-bar"></span>
+              <span>Violet</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-rose" data-color="rose">
+              <span class="neon-choice-bar"></span>
+              <span>Rose</span>
+            </button>
+            <button type="button" class="neon-choice-btn neon-amber" data-color="amber">
+              <span class="neon-choice-bar"></span>
+              <span>Amber</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="field-caption" for="classNameInput">Course Title</label>
+          <div class="neon-input-wrap">
+            <span class="neon-input-bar"></span>
+            <input type="text" id="classNameInput" class="ios-input" placeholder="e.g. Software Architecture" maxlength="100" required />
+          </div>
+        </div>
+
+        <div class="grid-2col">
+          <div>
+            <label class="field-caption" for="classRoomInput">Room / Building</label>
+            <input type="text" id="classRoomInput" class="ios-input" placeholder="e.g. ENG 402" maxlength="60" />
+          </div>
+          <div>
+            <label class="field-caption" for="classDayInput">Day of Week</label>
+            <select id="classDayInput" class="ios-select" required>
+              <option value="1">Monday</option>
+              <option value="2">Tuesday</option>
+              <option value="3">Wednesday</option>
+              <option value="4">Thursday</option>
+              <option value="5">Friday</option>
+              <option value="6">Saturday</option>
+              <option value="0">Sunday</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2col">
+          <div>
+            <label class="field-caption" for="classStartInput">Start Time</label>
+            <input type="time" id="classStartInput" class="ios-input mono" value="09:00" required />
+          </div>
+          <div>
+            <label class="field-caption" for="classEndInput">End Time</label>
+            <input type="time" id="classEndInput" class="ios-input mono" value="10:30" required />
+          </div>
+        </div>
+
+        <button type="submit" class="neon-submit-btn">Save Weekly Class</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       BOTTOM SHEET 3: เพิ่มตารางสอบ / วันส่งงานสำคัญ (Add Exam)
+       ======================================================================== -->
+  <div id="examSheetBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true">
+    <div class="ios-sheet" style="--active-form-neon: var(--neon-rose);">
+      <div class="sheet-grabber"></div>
+      <div class="sheet-topbar">
+        <div class="sheet-heading">New Exam / Deadline</div>
+        <button type="button" class="pill-btn" id="closeExamSheetBtn">Cancel</button>
+      </div>
+
+      <form id="addExamForm" class="form-group">
+        <div>
+          <label class="field-caption" for="examTitleInput">Subject / Exam Name</label>
+          <div class="neon-input-wrap">
+            <span class="neon-input-bar"></span>
+            <input type="text" id="examTitleInput" class="ios-input" placeholder="e.g. Calculus II Midterm" maxlength="100" required />
+          </div>
+        </div>
+
+        <div class="grid-2col">
+          <div>
+            <label class="field-caption" for="examDateInput">Exam Date</label>
+            <input type="date" id="examDateInput" class="ios-input mono" required />
+          </div>
+          <div>
+            <label class="field-caption" for="examTimeInput">Time (Optional)</label>
+            <input type="time" id="examTimeInput" class="ios-input mono" value="09:00" />
+          </div>
+        </div>
+
+        <div>
+          <label class="field-caption" for="examRoomInput">Location / Notes</label>
+          <input type="text" id="examRoomInput" class="ios-input" placeholder="e.g. Auditorium B, Seat 42" maxlength="80" />
+        </div>
+
+        <button type="submit" class="neon-submit-btn">Save Exam Countdown</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       BOTTOM SHEET 4: ตั้งค่า, ธีม, แจ้งเตือน และสำรองไฟล์ JSON
+       ======================================================================== -->
+  <div id="settingsSheetBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true">
+    <div class="ios-sheet">
+      <div class="sheet-grabber"></div>
+      <div class="sheet-topbar">
+        <div class="sheet-heading">Preferences &amp; Backup</div>
+        <button type="button" class="pill-btn" id="closeSettingsSheetBtn">Done</button>
+      </div>
+
+      <div class="form-group">
+        <div>
+          <label class="field-caption" for="themeModeSelect">Appearance</label>
+          <select id="themeModeSelect" class="ios-select">
+            <option value="dark">Obsidian Luxury Dark (Recommended for Neon)</option>
+            <option value="light">Alabaster &amp; Onyx Light</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="field-caption" for="reminderMinutesSelect">Class Alert Before Start</label>
+          <select id="reminderMinutesSelect" class="ios-select">
+            <option value="0">Off</option>
+            <option value="5">5 minutes before class</option>
+            <option value="10">10 minutes before class</option>
+            <option value="15">15 minutes before class</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="field-caption" for="yearModeSelect">Calendar Year Era</label>
+          <select id="yearModeSelect" class="ios-select">
+            <option value="CE">Standard English (CE — 2026)</option>
+            <option value="BE">Buddhist Era (BE / พ.ศ. — 2569)</option>
+          </select>
+        </div>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+          <span class="field-caption">Backup &amp; Restore (JSON)</span>
+          <div class="grid-2col">
+            <button type="button" class="ios-secondary-btn" id="exportJsonBtn">Export Backup</button>
+            <button type="button" class="ios-secondary-btn" id="importJsonBtn">Import Backup</button>
+          </div>
+          <input type="file" id="importFileInput" accept="application/json,.json" style="display: none;" />
+        </div>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+          <span class="field-caption">Demo Schedule</span>
+          <button type="button" class="ios-secondary-btn" id="loadSampleBtn">Load Sample iPhone Schedule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       ระบบจัดการสถานะและฐานข้อมูล localStorage (หน้าแรกคือ Calendar)
+       ========================================================================== */
+    const STORAGE_KEY = 'timing_student_schedule_v1';
+
+    const DAYS_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const MONTHS_FULL = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const NEON_KEYS = ['lime', 'cyan', 'rose', 'violet', 'amber'];
+
+    // แปลงชื่อสีเดิมจากเวอร์ชันก่อนให้เป็นโทนสีนีออนอัตโนมัติ
+    const LEGACY_COLOR_MAP = {
+      pine: 'lime',
+      slate: 'cyan',
+      clay: 'rose',
+      ochre: 'amber',
+      plum: 'violet'
+    };
+
+    function normalizeNeon(colorStr, fallback = 'lime') {
+      if (NEON_KEYS.includes(colorStr)) return colorStr;
+      if (LEGACY_COLOR_MAP[colorStr]) return LEGACY_COLOR_MAP[colorStr];
+      return fallback;
+    }
+
+    function neonCssVar(neonKey) {
+      return `var(--neon-${normalizeNeon(neonKey)})`;
+    }
+
+    let state = {
+      classes: [], // { id, name, room, day, start, end, color }
+      items: [],   // { id, title, type, date, time, repeat, color, done, completedDates }
+      exams: [],   // { id, title, date, time, room }
+      settings: {
+        reminderMinutes: 10,
+        yearMode: 'CE',
+        theme: 'dark'
+      }
+    };
+
+    // ตั้งค่าให้หน้าแรก (Default Landing Tab) เป็นหน้าปฏิทิน ('calendar')
+    let activeTab = 'calendar';
+    let activeSubtab = 'weekly';
+    let calendarCursor = new Date();
+    let selectedDateStr = formatDateKey(new Date());
+    let currentItemType = 'task';
+    let selectedItemNeon = 'lime';
+    let selectedClassNeon = 'cyan';
+    let notifiedClassKeys = new Set();
+
+    let focusSecondsLeft = 25 * 60;
+    let focusInterval = null;
+
+    /* ==========================================================================
+       ฟังก์ชันป้องกัน XSS (Escape ข้อความที่ผู้ใช้พิมพ์ทุกครั้งก่อนใส่ใน HTML)
+       ========================================================================== */
+    function escapeHtml(rawStr) {
+      if (rawStr === null || rawStr === undefined) return '';
+      return String(rawStr)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+    }
+
+    function formatDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseDateKey(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function formatYear(yearNum) {
+      return state.settings.yearMode === 'BE' ? yearNum + 543 : yearNum;
+    }
+
+    function formatReadableDate(dateStr) {
+      const d = parseDateKey(dateStr);
+      return `${DAYS_FULL[d.getDay()]}, ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]} ${formatYear(d.getFullYear())}`;
+    }
+
+    function timeToMinutes(timeStr) {
+      if (!timeStr || !/^\d{2}:\d{2}$/.test(timeStr)) return 9999;
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    /* ==========================================================================
+       โหลดและบันทึกข้อมูลลง localStorage
+       ========================================================================== */
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          state.classes = Array.isArray(parsed.classes) ? parsed.classes : [];
+          state.items = Array.isArray(parsed.items) ? parsed.items : [];
+          state.exams = Array.isArray(parsed.exams) ? parsed.exams : [];
+          if (parsed.settings && typeof parsed.settings === 'object') {
+            state.settings = {
+              reminderMinutes: Number(parsed.settings.reminderMinutes ?? 10),
+              yearMode: parsed.settings.yearMode === 'BE' ? 'BE' : 'CE',
+              theme: parsed.settings.theme === 'light' ? 'light' : 'dark'
+            };
+          }
+        }
+      } catch (err) {
+        console.error('Failed to read localStorage:', err);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        console.error('Failed to save localStorage:', err);
+      }
+    }
+
+    function applyTheme() {
+      if (state.settings.theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+    }
+
+    /* ==========================================================================
+       ตรรกะการตรวจสอบรายการประจำวันและงานที่ทำซ้ำ (Daily / Weekly)
+       ========================================================================== */
+    function doesItemOccurOnDate(item, targetDateStr) {
+      if (item.date === targetDateStr) return true;
+      if (!item.repeat || item.repeat === 'none') return false;
+      if (targetDateStr < item.date) return false;
+
+      if (item.repeat === 'daily') return true;
+      if (item.repeat === 'weekly') {
+        return parseDateKey(item.date).getDay() === parseDateKey(targetDateStr).getDay();
+      }
+      return false;
+    }
+
+    function isItemDoneOnDate(item, targetDateStr) {
+      if (!item.repeat || item.repeat === 'none') {
+        return Boolean(item.done);
+      }
+      return Array.isArray(item.completedDates) && item.completedDates.includes(targetDateStr);
+    }
+
+    function toggleItemDone(itemId, targetDateStr) {
+      const item = state.items.find((i) => i.id === itemId);
+      if (!item || item.type !== 'task') return;
+
+      if (!item.repeat || item.repeat === 'none') {
+        item.done = !item.done;
+      } else {
+        if (!Array.isArray(item.completedDates)) item.completedDates = [];
+        const idx = item.completedDates.indexOf(targetDateStr);
+        if (idx >= 0) item.completedDates.splice(idx, 1);
+        else item.completedDates.push(targetDateStr);
+      }
+      saveState();
+      renderAll();
+      if (document.getElementById('daySheetBackdrop').classList.contains('open')) {
+        renderDaySheet(selectedDateStr);
+      }
+    }
+
+    function deleteItem(itemId) {
+      state.items = state.items.filter((i) => i.id !== itemId);
+      saveState();
+      renderAll();
+      if (document.getElementById('daySheetBackdrop').classList.contains('open')) {
+        renderDaySheet(selectedDateStr);
+      }
+    }
+
+    /* ==========================================================================
+       ฟังก์ชันสร้าง HTML การ์ดกิจกรรมพร้อมแถบสีนีออน (ใช้ร่วมกันทุกหน้า)
+       ========================================================================== */
+    function renderTaskCardHtml(item, contextDateStr, isOverdueView = false) {
+      const isTask = item.type === 'task';
+      const isDone = isTask ? isItemDoneOnDate(item, contextDateStr) : false;
+      const neonKey = normalizeNeon(item.color, isTask ? 'lime' : 'amber');
+      const safeTitle = escapeHtml(item.title);
+
+      const pills = [];
+      if (item.time) pills.push(`<span class="neon-pill">${escapeHtml(item.time)}</span>`);
+      if (!isTask) pills.push(`<span class="neon-pill">Note</span>`);
+      if (item.repeat && item.repeat !== 'none') pills.push(`<span class="neon-pill">${escapeHtml(item.repeat)}</span>`);
+      if (isOverdueView) pills.push(`<span class="neon-pill">Due ${escapeHtml(formatReadableDate(item.date))}</span>`);
+
+      return `
+        <div class="activity-card neon-${neonKey} ${isDone ? 'is-done' : ''}">
+          <div class="activity-main">
+            ${isTask ? `
+              <button type="button" class="ios-check-btn" data-action="toggle-item" data-id="${escapeHtml(item.id)}" data-date="${escapeHtml(contextDateStr)}" aria-label="Complete activity">
+                <span class="ios-circle">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+              </button>
+            ` : ''}
+            <div class="activity-text">
+              <div class="activity-title">${safeTitle}</div>
+              ${pills.length > 0 ? `<div class="activity-meta">${pills.join('')}</div>` : ''}
+            </div>
+          </div>
+          <button type="button" class="delete-icon-btn" data-action="delete-item" data-id="${escapeHtml(item.id)}" aria-label="Delete item">&times;</button>
+        </div>
+      `;
+    }
+
+    // สร้างไทม์ไลน์รวมของวันที่ระบุ (คาบเรียน + สอบ + งาน + โน้ต เรียงตามเวลา)
+    function buildDayTimelineHtml(dateStr) {
+      const d = parseDateKey(dateStr);
+      const weekday = d.getDay();
+
+      const dayClasses = state.classes
+        .filter((c) => Number(c.day) === weekday)
+        .map((c) => ({ kind: 'class', sortTime: timeToMinutes(c.start), data: c }));
+
+      const dayExams = state.exams
+        .filter((ex) => ex.date === dateStr)
+        .map((ex) => ({ kind: 'exam', sortTime: timeToMinutes(ex.time), data: ex }));
+
+      const dayItems = state.items
+        .filter((item) => doesItemOccurOnDate(item, dateStr))
+        .map((item) => ({ kind: 'item', sortTime: timeToMinutes(item.time), data: item }));
+
+      const combined = [...dayClasses, ...dayExams, ...dayItems].sort((a, b) => a.sortTime - b.sortTime);
+
+      if (combined.length === 0) {
+        return `<div class="empty-box">No classes or activities on this day yet.</div>`;
+      }
+
+      return combined.map((entry) => {
+        if (entry.kind === 'class') {
+          const cls = entry.data;
+          const neonKey = normalizeNeon(cls.color, 'cyan');
+          return `
+            <div class="activity-card neon-${neonKey}">
+              <div class="activity-main">
+                <div class="activity-text">
+                  <div class="activity-title">${escapeHtml(cls.name)}</div>
+                  <div class="activity-meta">
+                    <span class="neon-pill">${escapeHtml(cls.start)} – ${escapeHtml(cls.end)}</span>
+                    ${cls.room ? `<span>Room ${escapeHtml(cls.room)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <span class="neon-pill">Class</span>
+            </div>
+          `;
+        }
+        if (entry.kind === 'exam') {
+          const ex = entry.data;
+          return `
+            <div class="activity-card neon-rose is-live">
+              <div class="activity-main">
+                <div class="activity-text">
+                  <div class="activity-title">${escapeHtml(ex.title)}</div>
+                  <div class="activity-meta">
+                    <span class="neon-pill solid-live">EXAM</span>
+                    ${ex.time ? `<span class="mono">${escapeHtml(ex.time)}</span>` : ''}
+                    ${ex.room ? `<span>${escapeHtml(ex.room)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        return renderTaskCardHtml(entry.data, dateStr, false);
+      }).join('');
+    }
+
+    /* ==========================================================================
+       การแสดงผลส่วนหัวและแท็บทั้ง 3 แท็บ
+       ========================================================================== */
+    function renderHeader() {
+      const todayStr = formatDateKey(new Date());
+      const subEl = document.getElementById('headerSubtitle');
+      const titleEl = document.getElementById('headerTitle');
+
+      if (activeTab === 'calendar') {
+        subEl.textContent = formatReadableDate(todayStr).toUpperCase();
+        titleEl.textContent = 'Calendar';
+      } else if (activeTab === 'today') {
+        subEl.textContent = 'TODAY OVERVIEW';
+        titleEl.textContent = formatReadableDate(todayStr);
+      } else {
+        subEl.textContent = 'SEMESTER TIMETABLE';
+        titleEl.textContent = 'Classes';
+      }
+    }
+
+    // แสดงผลหน้าแรก: ปฏิทินรายเดือน + ไทม์ไลน์ของวันที่เลือก
+    function renderCalendarTab() {
+      const year = calendarCursor.getFullYear();
+      const month = calendarCursor.getMonth();
+      const todayStr = formatDateKey(new Date());
+
+      document.getElementById('calMonthLabel').textContent = `${MONTHS_FULL[month]} ${formatYear(year)}`;
+
+      const firstDayOfMonth = new Date(year, month, 1);
+      const startOffset = (firstDayOfMonth.getDay() + 6) % 7; // เริ่มวันจันทร์
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+      const startGridDate = new Date(year, month, 1 - startOffset);
+
+      let cellsHtml = '';
+      for (let i = 0; i < totalCells; i++) {
+        const cellDate = new Date(startGridDate.getFullYear(), startGridDate.getMonth(), startGridDate.getDate() + i);
+        const cellDateStr = formatDateKey(cellDate);
+        const isCurrentMonth = cellDate.getMonth() === month;
+        const isToday = cellDateStr === todayStr;
+        const isSelected = cellDateStr === selectedDateStr;
+        const weekday = cellDate.getDay();
+
+        const hasClasses = state.classes.some((c) => Number(c.day) === weekday);
+        const dayItems = state.items.filter((item) => doesItemOccurOnDate(item, cellDateStr));
+        const hasExam = state.exams.some((ex) => ex.date === cellDateStr);
+
+        // สร้างแถบสีนีออนขนาดเล็กใต้วันที่ตามสีกิจกรรมของวันนั้น
+        let indicatorsHtml = '';
+        if (hasClasses) {
+          indicatorsHtml += `<span class="cal-class-dot"></span>`;
+        }
+        if (hasExam) {
+          indicatorsHtml += `<span class="cal-neon-pill" style="background-color: var(--neon-rose);"></span>`;
+        }
+        dayItems.slice(0, 2).forEach((it) => {
+          const cKey = normalizeNeon(it.color, it.type === 'note' ? 'amber' : 'lime');
+          indicatorsHtml += `<span class="cal-neon-pill" style="background-color: var(--neon-${cKey});"></span>`;
+        });
+
+        cellsHtml += `
+          <button type="button"
+            class="cal-cell ${!isCurrentMonth ? 'is-outside' : ''} ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}"
+            data-date="${cellDateStr}"
+            aria-label="${formatReadableDate(cellDateStr)}">
+            <span class="cal-day-num mono">${cellDate.getDate()}</span>
+            <span class="cal-indicators">${indicatorsHtml}</span>
+          </button>
+        `;
+      }
+
+      document.getElementById('calendarGrid').innerHTML = cellsHtml;
+
+      // อัปเดตการ์ดรายละเอียดของวันที่เลือกด้านล่างปฏิทิน
+      document.getElementById('calSelectedDateLabel').textContent = formatReadableDate(selectedDateStr).toUpperCase();
+      document.getElementById('calSelectedDayList').innerHTML = buildDayTimelineHtml(selectedDateStr);
+    }
+
+    // แสดงผลหน้า Today
+    function renderTodayTab() {
+      const now = new Date();
+      const todayStr = formatDateKey(now);
+      const todayWeekday = now.getDay();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      // 1. วันสอบที่กำลังจะมาถึง
+      const upcomingExams = state.exams
+        .filter((ex) => ex.date >= todayStr)
+        .sort((a, b) => a.date.localeCompare(b.date) || timeToMinutes(a.time) - timeToMinutes(b.time));
+
+      const examsSec = document.getElementById('todayExamsSection');
+      document.getElementById('todayExamsCount').textContent = upcomingExams.length;
+
+      if (upcomingExams.length > 0) {
+        examsSec.style.display = 'block';
+        document.getElementById('todayExamsList').innerHTML = upcomingExams.slice(0, 3).map((ex) => {
+          const diffDays = Math.round((parseDateKey(ex.date) - parseDateKey(todayStr)) / 86400000);
+          const badge = diffDays === 0 ? 'TODAY' : diffDays === 1 ? 'TOMORROW' : `D-${diffDays}`;
+          return `
+            <div class="activity-card neon-rose ${diffDays <= 3 ? 'is-live' : ''}">
+              <div class="activity-main">
+                <div class="activity-text">
+                  <div class="activity-title">${escapeHtml(ex.title)}</div>
+                  <div class="activity-meta">
+                    <span>${formatReadableDate(ex.date)}</span>
+                    ${ex.time ? `<span class="mono">${escapeHtml(ex.time)}</span>` : ''}
+                    ${ex.room ? `<span>${escapeHtml(ex.room)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <span class="neon-pill ${diffDays <= 3 ? 'solid-live' : ''}">${badge}</span>
+            </div>
+          `;
+        }).join('');
+      } else {
+        examsSec.style.display = 'none';
+      }
+
+      // 2. งานค้าง (Overdue)
+      const overdueItems = state.items
+        .filter((item) => item.type === 'task' && (!item.repeat || item.repeat === 'none') && !item.done && item.date < todayStr)
+        .sort((a, b) => a.date.localeCompare(b.date) || timeToMinutes(a.time) - timeToMinutes(b.time));
+
+      const overdueSec = document.getElementById('overdueSection');
+      document.getElementById('overdueCount').textContent = overdueItems.length;
+
+      if (overdueItems.length > 0) {
+        overdueSec.style.display = 'block';
+        document.getElementById('overdueList').innerHTML = overdueItems.map((it) => renderTaskCardHtml({ ...it, color: 'rose' }, it.date, true)).join('');
+      } else {
+        overdueSec.style.display = 'none';
+      }
+
+      // 3. คาบเรียนวันนี้ (ไฮไลต์คาบที่กำลังเรียนอยู่ + แสดงเวลาพักระหว่างคาบ)
+      const todayClasses = state.classes
+        .filter((c) => Number(c.day) === todayWeekday)
+        .sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+
+      document.getElementById('todayClassCount').textContent = todayClasses.length;
+      const classesListEl = document.getElementById('todayClassesList');
+
+      if (todayClasses.length === 0) {
+        classesListEl.innerHTML = `<div class="empty-box">No classes scheduled for ${DAYS_FULL[todayWeekday]}.</div>`;
+      } else {
+        let htmlParts = [];
+        todayClasses.forEach((cls, idx) => {
+          const startMin = timeToMinutes(cls.start);
+          const endMin = timeToMinutes(cls.end);
+          const isCurrent = currentMinutes >= startMin && currentMinutes < endMin;
+          const isPast = currentMinutes >= endMin;
+          const neonKey = normalizeNeon(cls.color, 'cyan');
+
+          if (idx > 0) {
+            const prevEnd = timeToMinutes(todayClasses[idx - 1].end);
+            const gap = startMin - prevEnd;
+            if (gap >= 15) {
+              const hrs = Math.floor(gap / 60);
+              const mins = gap % 60;
+              const gapLabel = hrs > 0 ? `${hrs}h ${mins > 0 ? mins + 'm ' : ''}free break` : `${mins}m free break`;
+              htmlParts.push(`<div class="break-divider">${gapLabel}</div>`);
+            }
+          }
+
+          const leftMins = endMin - currentMinutes;
+          htmlParts.push(`
+            <div class="activity-card neon-${neonKey} ${isCurrent ? 'is-live' : ''} ${isPast ? 'is-past' : ''}">
+              <div class="activity-main">
+                <div class="activity-text">
+                  <div class="activity-title">${escapeHtml(cls.name)}</div>
+                  <div class="activity-meta">
+                    <span class="neon-pill">${escapeHtml(cls.start)} – ${escapeHtml(cls.end)}</span>
+                    ${cls.room ? `<span>Room ${escapeHtml(cls.room)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              ${isCurrent ? `<span class="neon-pill solid-live">LIVE · ${leftMins}m</span>` : ''}
+            </div>
+          `);
+        });
+        classesListEl.innerHTML = htmlParts.join('');
+      }
+
+      // 4. กิจกรรมและโน้ตวันนี้
+      const todayItems = state.items
+        .filter((item) => doesItemOccurOnDate(item, todayStr))
+        .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+
+      const tasksEl = document.getElementById('todayTasksList');
+      if (todayItems.length === 0) {
+        tasksEl.innerHTML = `<div class="empty-box">No activities for today yet. Tap below to add one.</div>`;
+      } else {
+        tasksEl.innerHTML = todayItems.map((item) => renderTaskCardHtml(item, todayStr, false)).join('');
+      }
+    }
+
+    // แสดงผลหน้า Classes & Exams
+    function renderClassesTab() {
+      const dayOrder = [1, 2, 3, 4, 5, 6, 0];
+      const container = document.getElementById('weeklyClassesList');
+
+      if (state.classes.length === 0) {
+        container.innerHTML = `<div class="empty-box">No weekly classes added yet.</div>`;
+      } else {
+        let html = '';
+        dayOrder.forEach((dayNum) => {
+          const list = state.classes
+            .filter((c) => Number(c.day) === dayNum)
+            .sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+
+          if (list.length === 0) return;
+
+          html += `
+            <div class="section-block">
+              <div class="section-head">
+                <span class="section-label">${DAYS_FULL[dayNum]}</span>
+              </div>
+              <div class="card-stack">
+                ${list.map((cls) => {
+                  const neonKey = normalizeNeon(cls.color, 'cyan');
+                  return `
+                    <div class="activity-card neon-${neonKey}">
+                      <div class="activity-main">
+                        <div class="activity-text">
+                          <div class="activity-title">${escapeHtml(cls.name)}</div>
+                          <div class="activity-meta">
+                            <span class="neon-pill">${escapeHtml(cls.start)} – ${escapeHtml(cls.end)}</span>
+                            ${cls.room ? `<span>Room ${escapeHtml(cls.room)}</span>` : ''}
+                          </div>
+                        </div>
+                      </div>
+                      <button type="button" class="delete-icon-btn" data-action="delete-class" data-id="${escapeHtml(cls.id)}" aria-label="Delete class">&times;</button>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      // ตารางสอบทั้งหมด
+      const examsEl = document.getElementById('examsList');
+      const todayStr = formatDateKey(new Date());
+      const sortedExams = [...state.exams].sort((a, b) => a.date.localeCompare(b.date) || timeToMinutes(a.time) - timeToMinutes(b.time));
+
+      if (sortedExams.length === 0) {
+        examsEl.innerHTML = `<div class="empty-box">No exams or major deadlines scheduled.</div>`;
+      } else {
+        examsEl.innerHTML = sortedExams.map((ex) => {
+          const diffDays = Math.round((parseDateKey(ex.date) - parseDateKey(todayStr)) / 86400000);
+          const badge = diffDays < 0 ? 'PASSED' : diffDays === 0 ? 'TODAY' : diffDays === 1 ? 'TOMORROW' : `D-${diffDays}`;
+          return `
+            <div class="activity-card neon-rose">
+              <div class="activity-main">
+                <div class="activity-text">
+                  <div class="activity-title">${escapeHtml(ex.title)}</div>
+                  <div class="activity-meta">
+                    <span class="neon-pill ${diffDays >= 0 && diffDays <= 5 ? 'solid-live' : ''}">${badge}</span>
+                    <span>${formatReadableDate(ex.date)}</span>
+                    ${ex.time ? `<span class="mono">${escapeHtml(ex.time)}</span>` : ''}
+                    ${ex.room ? `<span>${escapeHtml(ex.room)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="delete-icon-btn" data-action="delete-exam" data-id="${escapeHtml(ex.id)}" aria-label="Delete exam">&times;</button>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function openDaySheet(dateStr) {
+      selectedDateStr = dateStr;
+      renderCalendarTab();
+      renderDaySheet(dateStr);
+      document.getElementById('daySheetBackdrop').classList.add('open');
+    }
+
+    function renderDaySheet(dateStr) {
+      const d = parseDateKey(dateStr);
+      document.getElementById('daySheetSub').textContent = DAYS_FULL[d.getDay()].toUpperCase();
+      document.getElementById('daySheetTitle').textContent = formatReadableDate(dateStr);
+      document.getElementById('daySheetTimeline').innerHTML = buildDayTimelineHtml(dateStr);
+    }
+
+    function renderAll() {
+      applyTheme();
+      renderHeader();
+      renderCalendarTab();
+      renderTodayTab();
+      renderClassesTab();
+    }
+
+    /* ==========================================================================
+       ระบบแจ้งเตือนก่อนเข้าเรียน & สำรองข้อมูล JSON
+       ========================================================================== */
+    function checkClassReminders() {
+      const leadMins = Number(state.settings.reminderMinutes || 0);
+      if (leadMins <= 0) return;
+
+      const now = new Date();
+      const todayStr = formatDateKey(now);
+      const weekday = now.getDay();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+
+      state.classes.forEach((cls) => {
+        if (Number(cls.day) !== weekday) return;
+        const startMins = timeToMinutes(cls.start);
+        const diff = startMins - nowMins;
+        const notifyKey = `${todayStr}_${cls.id}`;
+
+        if (diff > 0 && diff <= leadMins && !notifiedClassKeys.has(notifyKey)) {
+          notifiedClassKeys.add(notifyKey);
+          const msg = `Class in ${diff}m: ${cls.name}${cls.room ? ' (' + cls.room + ')' : ''} at ${cls.start}`;
+          document.getElementById('reminderText').textContent = msg;
+          document.getElementById('reminderBanner').classList.add('visible');
+
+          if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+              new Notification('Timing — Class Starting Soon', { body: msg, icon: './icon-180.png' });
+            } catch (_) {}
+          }
+        }
+      });
+    }
+
+    function exportBackupJson() {
+      const payload = { version: 2, exportedAt: new Date().toISOString(), data: state };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `timing-backup-${formatDateKey(new Date())}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importBackupJson(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(String(e.target.result));
+          const source = parsed.data && typeof parsed.data === 'object' ? parsed.data : parsed;
+
+          if (!Array.isArray(source.classes) || !Array.isArray(source.items)) {
+            alert('Invalid backup file.');
+            return;
+          }
+
+          state.classes = source.classes.map((c) => ({
+            id: String(c.id || uid()),
+            name: String(c.name || 'Class').slice(0, 100),
+            room: String(c.room || '').slice(0, 60),
+            day: Number(c.day ?? 1),
+            start: String(c.start || '09:00'),
+            end: String(c.end || '10:30'),
+            color: normalizeNeon(c.color, 'cyan')
+          }));
+
+          state.items = source.items.map((it) => ({
+            id: String(it.id || uid()),
+            title: String(it.title || 'Activity').slice(0, 140),
+            type: it.type === 'note' ? 'note' : 'task',
+            date: /^\d{4}-\d{2}-\d{2}$/.test(it.date) ? it.date : formatDateKey(new Date()),
+            time: String(it.time || ''),
+            repeat: ['none', 'daily', 'weekly'].includes(it.repeat) ? it.repeat : 'none',
+            color: normalizeNeon(it.color, 'lime'),
+            done: Boolean(it.done),
+            completedDates: Array.isArray(it.completedDates) ? it.completedDates.map(String) : []
+          }));
+
+          state.exams = Array.isArray(source.exams)
+            ? source.exams.map((ex) => ({
+                id: String(ex.id || uid()),
+                title: String(ex.title || 'Exam').slice(0, 100),
+                date: /^\d{4}-\d{2}-\d{2}$/.test(ex.date) ? ex.date : formatDateKey(new Date()),
+                time: String(ex.time || ''),
+                room: String(ex.room || '').slice(0, 80)
+              }))
+            : [];
+
+          saveState();
+          renderAll();
+          document.getElementById('settingsSheetBackdrop').classList.remove('open');
+          alert('Backup restored successfully.');
+        } catch (_) {
+          alert('Could not parse JSON backup file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /* ==========================================================================
+       ผูกเหตุการณ์ (Event Listeners) ทั้งหมด
+       ========================================================================== */
+    function initEvents() {
+      // สลับแท็บหลักบน iOS Floating Dock
+      document.querySelectorAll('.dock-tab').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activeTab = btn.dataset.tab;
+          document.querySelectorAll('.dock-tab').forEach((b) => b.classList.toggle('active', b === btn));
+          document.querySelectorAll('.tab-view').forEach((v) => v.classList.toggle('active', v.id === `tab-${activeTab}`));
+          renderAll();
+        });
+      });
+
+      // สลับแท็บย่อยในหน้า Classes
+      document.querySelectorAll('#tab-classes .ios-seg-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activeSubtab = btn.dataset.subtab;
+          document.querySelectorAll('#tab-classes .ios-seg-btn').forEach((b) => b.classList.toggle('active', b === btn));
+          document.getElementById('weeklyClassesPane').style.display = activeSubtab === 'weekly' ? 'block' : 'none';
+          document.getElementById('examsPane').style.display = activeSubtab === 'exams' ? 'block' : 'none';
+        });
+      });
+
+      // ปุ่มเลื่อนเดือนในปฏิทิน
+      document.getElementById('calPrevBtn').addEventListener('click', () => {
+        calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() - 1, 1);
+        renderCalendarTab();
+      });
+      document.getElementById('calNextBtn').addEventListener('click', () => {
+        calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + 1, 1);
+        renderCalendarTab();
+      });
+      document.getElementById('calTodayBtn').addEventListener('click', () => {
+        const now = new Date();
+        calendarCursor = new Date(now.getFullYear(), now.getMonth(), 1);
+        selectedDateStr = formatDateKey(now);
+        renderCalendarTab();
+      });
+
+      // แตะวันที่ในปฏิทินเพื่อเลือกและเปิด Bottom Sheet
+      document.getElementById('calendarGrid').addEventListener('click', (e) => {
+        const cell = e.target.closest('.cal-cell');
+        if (!cell) return;
+        openDaySheet(cell.dataset.date);
+      });
+
+      // ปุ่มเพิ่มกิจกรรมจากหน้า Calendar และหน้า Today
+      document.getElementById('calQuickAddBtn').addEventListener('click', () => openDaySheet(selectedDateStr));
+      document.getElementById('calBottomAddBtn').addEventListener('click', () => openDaySheet(selectedDateStr));
+
+      const openTodayAdd = () => openDaySheet(formatDateKey(new Date()));
+      document.getElementById('addTodayItemBtn').addEventListener('click', openTodayAdd);
+      document.getElementById('addTodayItemBottomBtn').addEventListener('click', openTodayAdd);
+
+      // สลับประเภท Task / Note ใน Bottom Sheet
+      document.querySelectorAll('[data-item-type]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          currentItemType = btn.dataset.itemType;
+          document.querySelectorAll('[data-item-type]').forEach((b) => b.classList.toggle('active', b === btn));
+        });
+      });
+
+      // เลือกสีแถบนีออนตอนเพิ่มกิจกรรม (เปลี่ยนสีปุ่มและแถบข้างช่องพิมพ์แบบเรียลไทม์)
+      const daySheetContainer = document.getElementById('daySheetContainer');
+      document.getElementById('itemNeonPicker').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-neon]');
+        if (!btn) return;
+        selectedItemNeon = btn.dataset.neon;
+        document.querySelectorAll('#itemNeonPicker .neon-choice-btn').forEach((b) => b.classList.toggle('selected', b === btn));
+        daySheetContainer.style.setProperty('--active-form-neon', neonCssVar(selectedItemNeon));
+      });
+
+      // บันทึกกิจกรรมใหม่
+      document.getElementById('dayItemForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const titleInput = document.getElementById('itemTitleInput');
+        const timeInput = document.getElementById('itemTimeInput');
+        const repeatInput = document.getElementById('itemRepeatInput');
+        const title = titleInput.value.trim();
+        if (!title) return;
+
+        state.items.push({
+          id: uid(),
+          title,
+          type: currentItemType,
+          date: selectedDateStr,
+          time: timeInput.value || '',
+          repeat: repeatInput.value || 'none',
+          color: selectedItemNeon,
+          done: false,
+          completedDates: []
+        });
+
+        titleInput.value = '';
+        timeInput.value = '';
+        repeatInput.value = 'none';
+        saveState();
+        renderAll();
+        renderDaySheet(selectedDateStr);
+      });
+
+      // เลือกสีแถบนีออนตอนเพิ่มคาบเรียน
+      const classSheetContainer = document.getElementById('classSheetContainer');
+      classSheetContainer.style.setProperty('--active-form-neon', neonCssVar(selectedClassNeon));
+      document.getElementById('classColorPicker').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-color]');
+        if (!btn) return;
+        selectedClassNeon = btn.dataset.color;
+        document.querySelectorAll('#classColorPicker .neon-choice-btn').forEach((b) => b.classList.toggle('selected', b === btn));
+        classSheetContainer.style.setProperty('--active-form-neon', neonCssVar(selectedClassNeon));
+      });
+
+      // เปิดและบันทึกคาบเรียนประจำสัปดาห์
+      const openClassModal = () => {
+        document.getElementById('classDayInput').value = String(new Date().getDay());
+        document.getElementById('classSheetBackdrop').classList.add('open');
+      };
+      document.getElementById('openAddClassBtn').addEventListener('click', openClassModal);
+      document.getElementById('openAddClassBottomBtn').addEventListener('click', openClassModal);
+
+      document.getElementById('addClassForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('classNameInput').value.trim();
+        const room = document.getElementById('classRoomInput').value.trim();
+        const day = Number(document.getElementById('classDayInput').value);
+        const start = document.getElementById('classStartInput').value;
+        const end = document.getElementById('classEndInput').value;
+        if (!name || !start || !end) return;
+
+        state.classes.push({
+          id: uid(),
+          name,
+          room,
+          day,
+          start,
+          end,
+          color: selectedClassNeon
+        });
+
+        document.getElementById('classNameInput').value = '';
+        document.getElementById('classRoomInput').value = '';
+        document.getElementById('classSheetBackdrop').classList.remove('open');
+        saveState();
+        renderAll();
+      });
+
+      // เปิดและบันทึกตารางสอบ
+      const openExamModal = () => {
+        document.getElementById('examDateInput').value = formatDateKey(new Date());
+        document.getElementById('examSheetBackdrop').classList.add('open');
+      };
+      document.getElementById('openAddExamBtn').addEventListener('click', openExamModal);
+      document.getElementById('openAddExamBottomBtn').addEventListener('click', openExamModal);
+
+      document.getElementById('addExamForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('examTitleInput').value.trim();
+        const date = document.getElementById('examDateInput').value;
+        const time = document.getElementById('examTimeInput').value;
+        const room = document.getElementById('examRoomInput').value.trim();
+        if (!title || !date) return;
+
+        state.exams.push({ id: uid(), title, date, time, room });
+        document.getElementById('examTitleInput').value = '';
+        document.getElementById('examRoomInput').value = '';
+        document.getElementById('examSheetBackdrop').classList.remove('open');
+        saveState();
+        renderAll();
+      });
+
+      // Event Delegation สำหรับติ๊กงานและลบรายการ
+      document.body.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+
+        if (action === 'toggle-item') {
+          toggleItemDone(id, btn.dataset.date || selectedDateStr);
+        } else if (action === 'delete-item') {
+          deleteItem(id);
+        } else if (action === 'delete-class') {
+          state.classes = state.classes.filter((c) => c.id !== id);
+          saveState();
+          renderAll();
+        } else if (action === 'delete-exam') {
+          state.exams = state.exams.filter((ex) => ex.id !== id);
+          saveState();
+          renderAll();
+        }
+      });
+
+      // ตั้งค่า & สำรองข้อมูล
+      document.getElementById('openSettingsBtn').addEventListener('click', () => {
+        document.getElementById('themeModeSelect').value = state.settings.theme || 'dark';
+        document.getElementById('reminderMinutesSelect').value = String(state.settings.reminderMinutes || 0);
+        document.getElementById('yearModeSelect').value = state.settings.yearMode || 'CE';
+        document.getElementById('settingsSheetBackdrop').classList.add('open');
+      });
+
+      document.getElementById('themeModeSelect').addEventListener('change', (e) => {
+        state.settings.theme = e.target.value === 'light' ? 'light' : 'dark';
+        saveState();
+        applyTheme();
+      });
+
+      document.getElementById('reminderMinutesSelect').addEventListener('change', async (e) => {
+        const mins = Number(e.target.value);
+        state.settings.reminderMinutes = mins;
+        saveState();
+        if (mins > 0 && 'Notification' in window && Notification.permission === 'default') {
+          try { await Notification.requestPermission(); } catch (_) {}
+        }
+      });
+
+      document.getElementById('yearModeSelect').addEventListener('change', (e) => {
+        state.settings.yearMode = e.target.value === 'BE' ? 'BE' : 'CE';
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('exportJsonBtn').addEventListener('click', exportBackupJson);
+      document.getElementById('importJsonBtn').addEventListener('click', () => {
+        document.getElementById('importFileInput').click();
+      });
+      document.getElementById('importFileInput').addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          importBackupJson(e.target.files[0]);
+          e.target.value = '';
+        }
+      });
+
+      // โหลดข้อมูลตัวอย่างเพื่อดูความสวยงามของแถบสีนีออนตัดกับพื้นสีดำ
+      document.getElementById('loadSampleBtn').addEventListener('click', () => {
+        const now = new Date();
+        const todayStr = formatDateKey(now);
+        const todayDay = now.getDay();
+        const examDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 4);
+
+        state.classes = [
+          { id: uid(), name: 'iOS Human Interface & Product Design', room: 'STUDIO 4', day: todayDay, start: '09:30', end: '11:30', color: 'cyan' },
+          { id: uid(), name: 'Data Structures & Algorithms', room: 'CS 302', day: todayDay, start: '13:00', end: '15:00', color: 'violet' },
+          { id: uid(), name: 'Machine Learning Foundations', room: 'AI LAB 1', day: (todayDay + 1) % 7, start: '10:00', end: '12:00', color: 'lime' }
+        ];
+        state.items = [
+          { id: uid(), title: 'Finalize Design Critique Deck', type: 'task', date: todayStr, time: '16:30', repeat: 'none', color: 'lime', done: false, completedDates: [] },
+          { id: uid(), title: 'Evening Run & Mobility Session (5 km)', type: 'task', date: todayStr, time: '18:30', repeat: 'daily', color: 'rose', done: false, completedDates: [] },
+          { id: uid(), title: 'Bring MacBook USB-C adapter for presentation', type: 'note', date: todayStr, time: '09:00', repeat: 'none', color: 'amber', done: false, completedDates: [] }
+        ];
+        state.exams = [
+          { id: uid(), title: 'Algorithms Midterm Examination', date: formatDateKey(examDate), time: '09:00', room: 'Grand Hall A' }
+        ];
+        selectedDateStr = todayStr;
+        saveState();
+        renderAll();
+        document.getElementById('settingsSheetBackdrop').classList.remove('open');
+      });
+
+      document.getElementById('dismissReminderBtn').addEventListener('click', () => {
+        document.getElementById('reminderBanner').classList.remove('visible');
+      });
+
+      // ปิด Bottom Sheet
+      [
+        ['closeDaySheetBtn', 'daySheetBackdrop'],
+        ['closeClassSheetBtn', 'classSheetBackdrop'],
+        ['closeExamSheetBtn', 'examSheetBackdrop'],
+        ['closeSettingsSheetBtn', 'settingsSheetBackdrop']
+      ].forEach(([btnId, backdropId]) => {
+        document.getElementById(btnId).addEventListener('click', () => {
+          document.getElementById(backdropId).classList.remove('open');
+        });
+        document.getElementById(backdropId).addEventListener('click', (e) => {
+          if (e.target.id === backdropId) e.currentTarget.classList.remove('open');
+        });
+      });
+
+      // Focus Timer (25 นาที)
+      const timerBtn = document.getElementById('focusTimerBtn');
+      const timerLabel = document.getElementById('focusTimerLabel');
+      const updateTimer = () => {
+        const m = String(Math.floor(focusSecondsLeft / 60)).padStart(2, '0');
+        const s = String(focusSecondsLeft % 60).padStart(2, '0');
+        timerLabel.textContent = `${m}:${s}`;
+      };
+
+      timerBtn.addEventListener('click', () => {
+        if (focusInterval) {
+          clearInterval(focusInterval);
+          focusInterval = null;
+          timerBtn.classList.remove('timer-running');
+        } else {
+          timerBtn.classList.add('timer-running');
+          focusInterval = setInterval(() => {
+            if (focusSecondsLeft > 0) {
+              focusSecondsLeft--;
+              updateTimer();
+            } else {
+              clearInterval(focusInterval);
+              focusInterval = null;
+              timerBtn.classList.remove('timer-running');
+              focusSecondsLeft = 25 * 60;
+              updateTimer();
+              alert('25-minute Focus Session complete!');
+            }
+          }, 1000);
+        }
+      });
+
+      timerBtn.addEventListener('dblclick', () => {
+        if (focusInterval) clearInterval(focusInterval);
+        focusInterval = null;
+        focusSecondsLeft = 25 * 60;
+        timerBtn.classList.remove('timer-running');
+        updateTimer();
+      });
+    }
+
+    /* ==========================================================================
+       เริ่มต้นการทำงาน
+       ========================================================================== */
+    loadState();
+    initEvents();
+    renderAll();
+    checkClassReminders();
+
+    setInterval(() => {
+      if (activeTab === 'today') renderTodayTab();
+      checkClassReminders();
+    }, 30000);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
